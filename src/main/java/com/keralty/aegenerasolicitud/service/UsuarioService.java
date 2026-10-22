@@ -49,6 +49,7 @@ import com.keralty.aegenerasolicitud.sqlutils.SQLWhereOperandLiteral;
 import com.keralty.aegenerasolicitud.sqlutils.SQLWhereOperandOVParameter;
 import com.keralty.aegenerasolicitud.sqlutils.SQLWhereOperandPathAttribute;
 import com.keralty.aegenerasolicitud.sqlutils.SQLWhereOperandPathInstance;
+import com.keralty.aegenerasolicitud.utils.Utilities;
 import com.keralty.aegenerasolicitud.viewmodel.FilterRequest;
 import com.keralty.aegenerasolicitud.viewmodel.FilterVariableRequest;
 import com.keralty.aegenerasolicitud.viewmodel.InstanceResponseViewModel;
@@ -1061,7 +1062,7 @@ public class UsuarioService extends AbstractService {
         boolean ifCondition3 = repository.assocOperator073(usuarioTACTDESDECOREpBeneficiarioC).equals(true);
         if (ifCondition3) {
             /* Action 30: IF (EstadoBeneficiario <> pBeneficiarioC.EstadoBeneficiarioC) */
-            boolean ifCondition30 = !(usuarioTACTDESDECOREpthisUsuario.getEstadoBeneficiario().equalsObject(usuarioTACTDESDECOREpBeneficiarioC.getEstadoBeneficiarioC()));
+            boolean ifCondition30 = !Utilities.isEqual(usuarioTACTDESDECOREpthisUsuario.getEstadoBeneficiario(), usuarioTACTDESDECOREpBeneficiarioC.getEstadoBeneficiarioC());
             if (ifCondition30) {
                 /* Action 300: IF (EXIST (EstadoBeneficiario) = true) */
                 boolean ifCondition300 = repository.assocOperator074(usuarioTACTDESDECOREpthisUsuario).equals(true);

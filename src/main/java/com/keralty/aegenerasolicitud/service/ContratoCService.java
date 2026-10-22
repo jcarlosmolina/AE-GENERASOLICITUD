@@ -1752,7 +1752,7 @@ public class ContratoCService extends AbstractService {
         }
 
         /* Action 3: IF (MunicipioC <> ptMunicipioDireccion) */
-        boolean ifCondition3 = !(contratoCTPOSTNOTICREARpthisContratoC.getMunicipioC().equalsObject(contratoCTPOSTNOTICREARptMunicipioDireccion));
+        boolean ifCondition3 = !Utilities.isEqual(contratoCTPOSTNOTICREARpthisContratoC.getMunicipioC(), contratoCTPOSTNOTICREARptMunicipioDireccion);
         if (ifCondition3) {
             /* Action 30: IF (ptMunicipioDireccion <> NULL) */
             boolean ifCondition30 = (contratoCTPOSTNOTICREARptMunicipioDireccion != null && !contratoCTPOSTNOTICREARptMunicipioDireccion.isNull());
@@ -1773,7 +1773,7 @@ public class ContratoCService extends AbstractService {
         }
 
         /* Action 4: IF (AsesorC <> ptAsesorSolicitud) */
-        boolean ifCondition4 = !(contratoCTPOSTNOTICREARpthisContratoC.getAsesorC().equalsObject(contratoCTPOSTNOTICREARptAsesorSolicitud));
+        boolean ifCondition4 = !Utilities.isEqual(contratoCTPOSTNOTICREARpthisContratoC.getAsesorC(), contratoCTPOSTNOTICREARptAsesorSolicitud);
         if (ifCondition4) {
             /* Action 40: IF (ptAsesorSolicitud <> NULL) */
             boolean ifCondition40 = (contratoCTPOSTNOTICREARptAsesorSolicitud != null && !contratoCTPOSTNOTICREARptAsesorSolicitud.isNull());
@@ -1794,7 +1794,7 @@ public class ContratoCService extends AbstractService {
         }
 
         /* Action 5: IF (PeriodicidadC <> ptPeriodicidad) */
-        boolean ifCondition5 = !(contratoCTPOSTNOTICREARpthisContratoC.getPeriodicidadC().equalsObject(contratoCTPOSTNOTICREARptPeriodicidad));
+        boolean ifCondition5 = !Utilities.isEqual(contratoCTPOSTNOTICREARpthisContratoC.getPeriodicidadC(), contratoCTPOSTNOTICREARptPeriodicidad);
         if (ifCondition5) {
             /* Action 50: IF (ptPeriodicidad <> NULL) */
             boolean ifCondition50 = (contratoCTPOSTNOTICREARptPeriodicidad != null && !contratoCTPOSTNOTICREARptPeriodicidad.isNull());
@@ -1815,7 +1815,7 @@ public class ContratoCService extends AbstractService {
         }
 
         /* Action 6: IF (ProductoC <> ptProducto) */
-        boolean ifCondition6 = !(contratoCTPOSTNOTICREARpthisContratoC.getProductoC().equalsObject(contratoCTPOSTNOTICREARptProducto));
+        boolean ifCondition6 = !Utilities.isEqual(contratoCTPOSTNOTICREARpthisContratoC.getProductoC(), contratoCTPOSTNOTICREARptProducto);
         if (ifCondition6) {
             com.keralty.aegenerasolicitud.viewmodel.contratoc.siu.ChgProductoCRequest step60Request = new com.keralty.aegenerasolicitud.viewmodel.contratoc.siu.ChgProductoCRequest();
             step60Request.setContratoCchgProductoCpthisContratoCInstance(contratoCTPOSTNOTICREARpthisContratoC);
@@ -1824,7 +1824,7 @@ public class ContratoCService extends AbstractService {
         }
 
         /* Action 7: IF (PlanC <> ptPlan) */
-        boolean ifCondition7 = !(contratoCTPOSTNOTICREARpthisContratoC.getPlanC().equalsObject(contratoCTPOSTNOTICREARptPlan));
+        boolean ifCondition7 = !Utilities.isEqual(contratoCTPOSTNOTICREARpthisContratoC.getPlanC(), contratoCTPOSTNOTICREARptPlan);
         if (ifCondition7) {
             com.keralty.aegenerasolicitud.viewmodel.contratoc.siu.ChgPlanCRequest step70Request = new com.keralty.aegenerasolicitud.viewmodel.contratoc.siu.ChgPlanCRequest();
             step70Request.setContratoCchgPlanCpthisContratoCInstance(contratoCTPOSTNOTICREARpthisContratoC);

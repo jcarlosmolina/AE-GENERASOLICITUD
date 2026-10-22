@@ -53,6 +53,7 @@ import com.keralty.aegenerasolicitud.sqlutils.SQLSelect;
 import com.keralty.aegenerasolicitud.sqlutils.SQLWhereComparison;
 import com.keralty.aegenerasolicitud.sqlutils.SQLWhereOperandLiteral;
 import com.keralty.aegenerasolicitud.sqlutils.SQLWhereOperandPathAttribute;
+import com.keralty.aegenerasolicitud.utils.Utilities;
 import com.keralty.aegenerasolicitud.viewmodel.FilterRequest;
 import com.keralty.aegenerasolicitud.viewmodel.FilterVariableRequest;
 import com.keralty.aegenerasolicitud.viewmodel.InstanceResponseViewModel;
@@ -1577,7 +1578,7 @@ public class PersonaCService extends AbstractService {
         personaCSrv.evalPostNotificarImplementation(step1Request);
 
         /* Action 2: IF (TipoIdentificacionC <> ptpevcTipoIdentificacion) */
-        boolean ifCondition2 = !(personaCTMODIFICARpthisPersonaC.getTipoIdentificacionC().equalsObject(personaCTMODIFICARptpevcTipoIdentificacion));
+        boolean ifCondition2 = !Utilities.isEqual(personaCTMODIFICARpthisPersonaC.getTipoIdentificacionC(), personaCTMODIFICARptpevcTipoIdentificacion);
         if (ifCondition2) {
             com.keralty.aegenerasolicitud.viewmodel.personac.siu.CambTipoIdentificacionCRequest step20Request = new com.keralty.aegenerasolicitud.viewmodel.personac.siu.CambTipoIdentificacionCRequest();
             step20Request.setPersonaCCambTipoIdentificacionCpthisPersonaCInstance(personaCTMODIFICARpthisPersonaC);

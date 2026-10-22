@@ -23,6 +23,7 @@ import com.keralty.aegenerasolicitud.persistence.oid.SolicitudOid;
 import com.keralty.aegenerasolicitud.persistence.oid.SucursalOid;
 import com.keralty.aegenerasolicitud.repository.RespRegionalJpaRepository;
 import com.keralty.aegenerasolicitud.service.RegionalService;
+import com.keralty.aegenerasolicitud.utils.Utilities;
 import io.quarkus.arc.Arc;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -1866,7 +1867,7 @@ RADIO=1;
             AGENT = THIS
             */
             try {
-                if (agentInstance.equalsObject(this)) {
+                if (Utilities.isEqual(agentInstance, this)) {
                     returnValue = true;
                 }
             } catch (Exception e) {
