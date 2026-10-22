@@ -57,6 +57,7 @@ public class GlobalServicesService extends AbstractService {
             SolicitudService solicitudSrv,
             ErrorWSService errorWSSrv,
             PersonaService personaSrv,
+            ProteccionDatosService proteccionDatosSrv,
             RolService rolSrv,
             ContratoCService contratoCSrv,
             FamiliaCService familiaCSrv,
@@ -70,6 +71,7 @@ public class GlobalServicesService extends AbstractService {
         this.solicitudSrv = solicitudSrv;
         this.errorWSSrv = errorWSSrv;
         this.personaSrv = personaSrv;
+        this.proteccionDatosSrv = proteccionDatosSrv;
         this.rolSrv = rolSrv;
         this.contratoCSrv = contratoCSrv;
         this.familiaCSrv = familiaCSrv;
