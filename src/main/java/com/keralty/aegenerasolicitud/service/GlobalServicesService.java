@@ -19,7 +19,6 @@ import com.keralty.aegenerasolicitud.viewmodel.ServiceResponse;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Transactional
 @ApplicationScoped
@@ -35,7 +34,6 @@ public class GlobalServicesService extends AbstractService {
 
     PersonaService personaSrv;
 
-    @RestClient
     ProteccionDatosService proteccionDatosSrv;
 
     RolService rolSrv;
