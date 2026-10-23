@@ -86,7 +86,7 @@ public class ContratoMPRestUtils {
 		} catch(SystemException e) {
 			org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error(e.getMessage());
 			result.setErrorCode("AUTH");
-			result.getMensajesDeError().add("Estamos presentando fallas técnicas, contacte con el administrador");
+			result.addMensajeDeError("Estamos presentando fallas técnicas, contacte con el administrador");
 			return result;
 		}
 
@@ -208,7 +208,7 @@ public class ContratoMPRestUtils {
 							peticion, respuesta,
 							"REST Service", tiempoEjecucion, msgError);
 					if (numReintentos401 == maxReintentos401) {
-						org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error("Reintentos por 401 alcanzado. Autorizacion anterior: " + authorizationValorPrevio + " Valor actual: " + authorization);
+						org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error("Reintentos por 401 alcanzado");
 						org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error(e.getMessage());
 						throw new SystemException("Estamos presentando fallas tecnicas. Pruebe de nuevo pasados unos minutos. CTR-110");
 					}
@@ -257,7 +257,6 @@ public class ContratoMPRestUtils {
 
 	/**
 	 * Devuelve el Json correspondiente a la peticiï¿½n de inclusion Beneficiario
-	 * @param ctx Contexto
 	 * @param solicitud Solicitud
 	 * @return El Json
 	 * @throws SystemException
@@ -273,8 +272,9 @@ public class ContratoMPRestUtils {
 
 	/**
 	 * Llamada a crear contrato de ContratoMP
-	 * @param ctx Contextp
 	 * @param solicitud Solicitud
+	 * @param usuario Usuario
+	 * @param userFunctionsSrv UserFunctions
 	 * @return La respuesta del contrato. Un valor en ErrorCode diferente de Null o cadena vacia indica error que aparecerï¿½n en MensajesDeError
 	 * @throws ModelException 
 	 * @throws SystemException
@@ -299,7 +299,7 @@ public class ContratoMPRestUtils {
 		} catch(SystemException e) {
 			org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error(e.getMessage());
 			result.setErrorCode("AUTH");
-			result.getMensajesDeError().add("Estamos presentando fallas técnicas, contacte con el administrador");
+			result.addMensajeDeError("Estamos presentando fallas técnicas, contacte con el administrador");
 			return result;
 		}
 
@@ -427,7 +427,7 @@ public class ContratoMPRestUtils {
 							peticion, respuesta,
 							"REST Service", tiempoEjecucion, msgError);
 					if (numReintentos401 == maxReintentos401) {
-						org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error("Reintentos por 401 alcanzado. Autorizacion anterior: " + authorizationValorPrevio + " Valor actual: " + authorization);
+						org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error("Reintentos por 401 alcanzado");
 						org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error(e.getMessage());
 						throw new SystemException("Estamos presentando fallas tecnicas. Pruebe de nuevo pasados unos minutos. CTR-100");
 					}
@@ -477,7 +477,6 @@ public class ContratoMPRestUtils {
 
 	/**
 	 * Devuelve el Json correspondiente a la peticiï¿½n de crear contrato
-	 * @param ctx Contexto
 	 * @param solicitud Solicitud
 	 * @return El Json 
 	 * @throws SystemException
@@ -493,12 +492,11 @@ public class ContratoMPRestUtils {
 
 	/**
 	 * Devuelve el Json correspondiente a InsurancePlan
-	 * @param ctx Contexto
 	 * @param solicitud Solicitud
 	 * @return El Json 
 	 * @throws SystemException
 	 */
-	private JsonObject crearInsurancePlan( Solicitud solicitud) throws SystemException {
+	private JsonObject crearInsurancePlan(Solicitud solicitud) throws SystemException {
 		//	  "insurancePlan": {
 		//	    "identifier": [
 		//	      {
@@ -521,7 +519,6 @@ public class ContratoMPRestUtils {
 
 	/**
 	 * Devuelve el Json correspondiente a Contract
-	 * @param ctx Contexto
 	 * @param solicitud Solicitud
 	 * @return El Json 
 	 * @throws SystemException
@@ -604,7 +601,6 @@ public class ContratoMPRestUtils {
 
 	/**
 	 * Devuelve el Json correspondiente a Signer de Contract
-	 * @param ctx Contexto
 	 * @param solicitud Solicitud
 	 * @return El Json 
 	 * @throws SystemException
@@ -686,7 +682,6 @@ public class ContratoMPRestUtils {
 
 	/**
 	 * Devuelve el Json correspondiente a Subject de Contract
-	 * @param ctx Contexto
 	 * @param solicitud Solicitud
 	 * @return El Json 
 	 * @throws SystemException
@@ -917,7 +912,6 @@ public class ContratoMPRestUtils {
 
 	/**
 	 * Devuelve el Json correspondiente a SupportingInfo de Contract
-	 * @param ctx Contexto
 	 * @param solicitud Solicitud
 	 * @return El Json 
 	 */
@@ -946,7 +940,6 @@ public class ContratoMPRestUtils {
 
 	/**
 	 * Devuelve el Json correspondiente a term de Contract
-	 * @param ctx Contexto
 	 * @param solicitud Solicitud
 	 * @return El Json 
 	 * @throws SystemException
@@ -1177,7 +1170,6 @@ public class ContratoMPRestUtils {
 
 	/**
 	 * Devuelve el Json correspondiente a Authority de Contract
-	 * @param ctx Contexto
 	 * @param solicitud Solicitud
 	 * @return El Json 
 	 * @throws SystemException
@@ -1216,7 +1208,6 @@ public class ContratoMPRestUtils {
 
 	/**
 	 * Devuelve el Json correspondiente a Identifier de Contract
-	 * @param ctx Contexto
 	 * @param solicitud Solicitud
 	 * @return El Json 
 	 * @throws SystemException
@@ -1240,7 +1231,6 @@ public class ContratoMPRestUtils {
 
 	/**
 	 * Devuelve el Json correspondiente a Coverage
-	 * @param ctx Contexto
 	 * @param solicitud Solicitud
 	 * @return El Json 
 	 * @throws SystemException
@@ -1259,7 +1249,6 @@ public class ContratoMPRestUtils {
 
 	/**
 	 * Devuelve el Json correspondiente a Coverage de un beneficiario
-	 * @param ctx Contexto
 	 * @param usuario Beneficiario
 	 * @param solicitud
 	 * @return EL Json
@@ -1510,6 +1499,6 @@ public class ContratoMPRestUtils {
 		dato.setTipoServicio(p_atrTipoServicioArg);
 		dato.setTiempoEjecucion(p_atrTiempoEjecucionArg);
 		dato.setTextoError(p_atrTextoErrorArg);
-		result.getDatosLlamadasBH().add(dato);
+		result.addDatoLLamadasBH(dato);
 	}	
 }

@@ -1629,7 +1629,7 @@ public class UserFunctions extends AbstractService {
 						talla = pregunta.getPregCuesMedCObservacions();
 					}
 					if (peso != null && talla != null) {
-						Double tallaDbl = Double.valueOf(talla) / 100;
+						double tallaDbl = Double.valueOf(talla) / 100;
 						imc = Double.valueOf(peso) / (tallaDbl  * tallaDbl);
 						break;
 					}

@@ -1292,7 +1292,7 @@ public class GlobalServicesService extends AbstractService {
 	        				respuesta.setPregunta(resp.getPreguntaPNumero().toString());
 	        				respuesta.setRespuestaBool(resp.getPreguntaPRespuestaSiNo());
 	        				respuesta.setRespuestaString(resp.getPreguntaPdrvRespuesta());
-	        				cuestionarioRequest.getRespuestas().add(respuesta);
+	        				cuestionarioRequest.addRespuesta(respuesta);
 	        			}
 	        		}
 	        	}
@@ -1391,7 +1391,7 @@ public class GlobalServicesService extends AbstractService {
         	//resultado = PersonaCrearActualizarUtils.actualizarDireccionesPersona(serCtx, ptSolicitud.getTitularPersona(), ptSolicitud.getTitular().getTelefonoFijo(), ptSolicitud.getTitular().getTelefonoCelular(), ptSolicitud.getTitular().getTelefonoFijoDC(), ptSolicitud.getTitular().getTelefonoCelularDC(), ptSolicitud.getAE_SOLICITUDES().getNUMERO_SOLICITUD());
         }
         
-        if (resultado != null && !resultado.isEmpty()){
+        if (!resultado.isEmpty()){
         	guardarErrorWS(tGACTDIRECCIONESptSolicitud, resultado);
         }
         return response;
@@ -1554,7 +1554,7 @@ public class GlobalServicesService extends AbstractService {
 		}
 		// Si las validaciones han ido bien, proesamos la peticion
 
-		// La buscamos opr numero
+		// La buscamos por numero
         List<FilterVariableRequest> filterVariables = new ArrayList<>();
         filterVariables.add(new FilterVariableRequest(SolicitudConstants.VAR_NAME_IFSOLICITUDNUMSOLICITUD_VNUMSOLICITUD, numSolicitud));
         FilterRequest filterRequest = new FilterRequest(SolicitudConstants.FILTER_NAME_IFSOLICITUDNUMSOLICITUD, filterVariables);
@@ -1588,13 +1588,15 @@ public class GlobalServicesService extends AbstractService {
 		}
 
 		// GdC57 tris: En cualqueir caso, guardamos los errores enviados por BH
-		for (String err : request.getListaErrores()) {
-			CrearRequest reqCrear = new CrearRequest();
-			reqCrear.setErrorWScrearpagrSolicitudInstance(solicitud);
-			reqCrear.setErrorWScrearpatrDescripcion(err);
-			ServiceResponse resp = errorWSSrv.crearImplementation(reqCrear);
-			if (!"000".equalsIgnoreCase(resp.getResultCode())) {
-				throw new SystemException(resp.getResultCode() + "\n" + resp.getResultDescription());
+		if (request != null) {
+			for (String err : request.getListaErrores()) {
+				CrearRequest reqCrear = new CrearRequest();
+				reqCrear.setErrorWScrearpagrSolicitudInstance(solicitud);
+				reqCrear.setErrorWScrearpatrDescripcion(err);
+				ServiceResponse resp = errorWSSrv.crearImplementation(reqCrear);
+				if (!"000".equalsIgnoreCase(resp.getResultCode())) {
+					throw new SystemException(resp.getResultCode() + "\n" + resp.getResultDescription());
+				}
 			}
 		}
 		

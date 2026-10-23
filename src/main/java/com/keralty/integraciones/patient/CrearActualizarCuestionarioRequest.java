@@ -32,5 +32,7 @@ public class CrearActualizarCuestionarioRequest {
     @JsonProperty("respuestas")
 	public void setRespuestas(List<RespuestaCuestionario> respuestas) { this.respuestas = respuestas; }
 
-    
+    public void addRespuesta(RespuestaCuestionario respuesta) {
+    	this.respuestas.add(respuesta);
+    }
 }

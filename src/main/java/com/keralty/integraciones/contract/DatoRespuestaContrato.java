@@ -78,6 +78,10 @@ public class DatoRespuestaContrato {
 		return mensajesDeError;
 	}
 
+	public void addMensajeDeError(String mensaje) {
+		this.mensajesDeError.add(mensaje);
+	}
+	
 	public void setMensajesDeError(List<String> mensajesDeError) {
 		this.mensajesDeError = mensajesDeError;
 	}
@@ -86,6 +90,10 @@ public class DatoRespuestaContrato {
 		return datosLlamadasBH;
 	}
 
+	public void addDatoLLamadasBH(DatoLogLlamadaBH dato) {
+		this.datosLlamadasBH.add(dato);
+	}
+	
 	public void setDatosLlamadasBH(List<DatoLogLlamadaBH> datosLlamadasBH) {
 		this.datosLlamadasBH = datosLlamadasBH;
 	}
