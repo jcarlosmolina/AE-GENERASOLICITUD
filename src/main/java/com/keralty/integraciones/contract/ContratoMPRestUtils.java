@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.Date;
@@ -100,11 +101,10 @@ public class ContratoMPRestUtils {
 		Double tiempoEjecucion = 0.0;
 		long endTime;
 		int numReintentos401 = 0;
-		String authorizationValorPrevio = "";
 		while (numReintentos <= maxIntentosLlamada && numReintentos401 <= maxReintentos401) {
 			long startTime = System.currentTimeMillis();
 			try {
-				URL url = new URL(urlCompleta);
+				URL url = URI.create(urlCompleta).toURL();
 				URLConnection conn = url.openConnection();
 				conn.setDoOutput(true);
 				conn.setDoInput(true);
@@ -169,13 +169,13 @@ public class ContratoMPRestUtils {
 							for(JsonElement err : msgError){
 								JsonObject errJson = err.getAsJsonObject();
 								if (errJson != null && errJson.get("value") != null && errJson.get("value").getAsString() != null && !errJson.get("value").getAsString().isEmpty()) {
-									result.getMensajesDeError().add(errJson.get("value").getAsString());
+									result.addMensajeDeError(errJson.get("value").getAsString());
 									errorMsg += errJson.get("value").getAsString() + "\n";
 								}
 							}
 						}
 						if (result.getMensajesDeError().isEmpty()) {
-							result.getMensajesDeError().add("E000: Error no definido");
+							result.addMensajeDeError("E000: Error no definido");
 						}
 					}
 				}
@@ -230,7 +230,7 @@ public class ContratoMPRestUtils {
 						org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error(e1.getMessage());
 						Thread.currentThread().interrupt();
 					}
-					authorizationValorPrevio = authorization;
+					//authorizationValorPrevio = authorization;
 					fechaHora = STDFunctions.systemDateTimeFun();
 					authorization = generarAuthorization();					
 					numReintentos401++;
@@ -327,11 +327,11 @@ public class ContratoMPRestUtils {
 		long endTime;
 
 		int numReintentos401 = 0;
-		String authorizationValorPrevio = "";
+
 		while (numReintentos <= maxIntentosLlamada && numReintentos401 <= maxReintentos401) {
 			long startTime = System.currentTimeMillis();
 			try {
-				URL url = new URL(urlCompleta);
+				URL url = URI.create(urlCompleta).toURL();
 				URLConnection conn = url.openConnection();
 				conn.setConnectTimeout(timeout);
 				conn.setReadTimeout(timeout);
@@ -371,6 +371,8 @@ public class ContratoMPRestUtils {
 				while ((output = br.readLine()) != null) {
 					response.append(output);
 				}
+				br.close();
+				isr.close();
 
 				endTime = System.currentTimeMillis();
 				tiempoEjecucion = (double) ((endTime - startTime)/1000.0f);
@@ -387,14 +389,14 @@ public class ContratoMPRestUtils {
 							for(JsonElement err : msgError){
 								JsonObject errJson = err.getAsJsonObject();
 								if (errJson != null && errJson.get("value") != null && errJson.get("value").getAsString() != null && !errJson.get("value").getAsString().isEmpty()) {
-									result.getMensajesDeError().add(errJson.get("value").getAsString());
+									result.addMensajeDeError(errJson.get("value").getAsString());
 									errorMsg += errJson.get("value").getAsString() + "\n";
 
 								}
 							}
 						}
 						if (result.getMensajesDeError().isEmpty()) {
-							result.getMensajesDeError().add("E000: Error no definido");
+							result.addMensajeDeError("E000: Error no definido");
 						}
 					}
 				}
@@ -449,7 +451,7 @@ public class ContratoMPRestUtils {
 						org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error(e1.getMessage());
 						Thread.currentThread().interrupt();
 					}
-					authorizationValorPrevio = authorization;
+					//authorizationValorPrevio = authorization;
 					fechaHora = STDFunctions.systemDateTimeFun();
 					authorization = generarAuthorization();					
 					numReintentos401++;
@@ -1461,6 +1463,8 @@ public class ContratoMPRestUtils {
 			while ((output = br.readLine()) != null) {
 				response.append(output);
 			}
+			br.close();
+			isr.close();
 
 			// Analizamos la respuesta obtenida
 			// Se debe tomar de la respuesta del Api el access_token y el token_type

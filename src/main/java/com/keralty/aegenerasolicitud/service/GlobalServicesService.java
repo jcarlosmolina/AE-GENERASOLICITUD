@@ -1324,7 +1324,7 @@ public class GlobalServicesService extends AbstractService {
 				respuesta.setPregunta("108");
 				respuesta.setRespuestaBool(true);
 				respuesta.setRespuestaString(textoComentarios);
-				cuestionarioRequest.getRespuestas().add(respuesta);
+				cuestionarioRequest.addRespuesta(respuesta);
 
 	        	String resultado = bhCallService.crearActualizarCuestionarioMedico(cuestionarioRequest);
 	        	if (resultado != null && !resultado.isEmpty()) {
