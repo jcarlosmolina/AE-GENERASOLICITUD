@@ -19,10 +19,8 @@ import com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGINCLUSIONCON
 import com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGNOTIFICARANULARRequest;
 import com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGNOTIFICARCREARRequest;
 import com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGNOTIFICARINCLUSIONRequest;
-import com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRINCRequest;
-import com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRINCResponse;
-import com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRNEWRequest;
-import com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRNEWResponse;
+import com.keralty.integraciones.contractresponse.request.ContractResponseRequest;
+import com.keralty.integraciones.contractresponse.response.ContractResponseResponse;
 import com.keralty.aegenerasolicitud.viewmodel.ServiceResponse;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
@@ -128,14 +126,14 @@ public class GlobalServicesApi {
     @POST
     @Path(value = "/TGRPTACTRNEW")
     @RolesAllowed({"Admin","SuperAdmin","UsuarioSistemaExterno"})
-    public TGRPTACTRNEWResponse tGRPTACTRNEW(TGRPTACTRNEWRequest request) {
+    public ContractResponseResponse tGRPTACTRNEW(ContractResponseRequest request) {
         return service.tGRPTACTRNEW(request);
     }
 
     @POST
     @Path(value = "/TGRPTACTRINC")
     @RolesAllowed({"Admin","SuperAdmin","UsuarioSistemaExterno"})
-    public TGRPTACTRINCResponse tGRPTACTRINC(TGRPTACTRINCRequest request) {
+    public ContractResponseResponse tGRPTACTRINC(ContractResponseRequest request) {
         return service.tGRPTACTRINC(request);
     }
 }

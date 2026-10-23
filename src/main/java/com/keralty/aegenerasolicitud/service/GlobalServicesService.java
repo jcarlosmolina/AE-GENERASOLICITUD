@@ -20,6 +20,34 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
+import com.keralty.aegenerasolicitud.persistence.Direccion;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.keralty.aegenerasolicitud.global.SolicitudConstants;
+import com.keralty.aegenerasolicitud.viewmodel.FilterRequest;
+import com.keralty.aegenerasolicitud.viewmodel.FilterVariableRequest;
+import com.keralty.aegenerasolicitud.viewmodel.QueryRequest;
+import com.keralty.aegenerasolicitud.viewmodel.errorws.siu.CrearRequest;
+import com.keralty.aegenerasolicitud.viewmodel.logllamadasae.siu.CreateinstanceRequest;
+import com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TCAMBIARESTADORequest;
+import com.keralty.integraciones.contract.ContratoMPRestUtils;
+import com.keralty.integraciones.contract.DatoLogLlamadaBH;
+import com.keralty.integraciones.contract.DatoRespuestaContrato;
+import com.keralty.integraciones.contractresponse.request.ContractResponseRequest;
+import com.keralty.integraciones.contractresponse.response.ContractResponseResponse;
+import com.keralty.integraciones.patient.CrearActualizarPersonaRequest;
+import com.keralty.integraciones.patient.CrearActualizarPersonaResponse;
+import com.keralty.integraciones.patient.CrearActualizarCuestionarioRequest;
+import com.keralty.integraciones.patient.RespuestaCuestionario;
+import com.keralty.aegenerasolicitud.persistence.PreguntaP;
+import com.keralty.aegenerasolicitud.persistence.SeccionP;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+
 @Transactional
 @ApplicationScoped
 public class GlobalServicesService extends AbstractService {
@@ -52,6 +80,11 @@ public class GlobalServicesService extends AbstractService {
 
     GlobalServicesJpaRepository globalServicesRepository;
 
+    ContratoMPRestUtils contratoMPRestUtils;
+    
+    @RestClient
+    BhCallService bhCallService;
+    
     @Inject
     public GlobalServicesService(
             SolicitudService solicitudSrv,
@@ -67,7 +100,9 @@ public class GlobalServicesService extends AbstractService {
             LogLlamadasBHService logLlamadasBHSrv,
             GlobalServicesJpaRepository globalServicesRepository,
             UserFunctions userFunctionsSrv,
-            GlobalServicesService globalServicesSrv) {
+            GlobalServicesService globalServicesSrv,
+            ContratoMPRestUtils contratoMPRestUtils) {
+        this.contratoMPRestUtils = contratoMPRestUtils;
         this.solicitudSrv = solicitudSrv;
         this.errorWSSrv = errorWSSrv;
         this.personaSrv = personaSrv;
@@ -128,6 +163,8 @@ public class GlobalServicesService extends AbstractService {
 
         oGENERARSOLICITUD2Preconditions(request);
 
+        response.setOGENERARSOLICITUD2psError(Boolean.FALSE);
+
         try {
             /* Action 1: IF (ptpSolicitudAE.Tramite = 2 AND ptpSolicitudAE.tipoContrato = 3) */
             boolean ifCondition1 = (oGENERARSOLICITUD2ptpSolicitudAE.getSolicitudTramite()).equals(Long.valueOf(2)) && (oGENERARSOLICITUD2ptpSolicitudAE.getSolicitudtipoContrato()).equals(Long.valueOf(3));
@@ -137,7 +174,9 @@ public class GlobalServicesService extends AbstractService {
                     solicitudSrv.marcarDatosPagoOKTxn(step10Request);
                     globalServicesRepository.refreshEntity(oGENERARSOLICITUD2ptpSolicitudAE);
             }
-        } catch (Exception e) { }
+        } catch (Exception e) {
+        	throw e;
+        }
 
         try {
             com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TMARCARCOMPLETADARequest step2Request = new com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TMARCARCOMPLETADARequest();
@@ -145,7 +184,9 @@ public class GlobalServicesService extends AbstractService {
             com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TMARCARCOMPLETADAResponse step2Response = solicitudSrv.tMARCARCOMPLETADATxn(step2Request);
             response.setOGENERARSOLICITUD2ptpsNumSolicitud(step2Response.getSolicitudTMARCARCOMPLETADAptpsNumSolicitud());
             globalServicesRepository.refreshEntity(oGENERARSOLICITUD2ptpSolicitudAE);
-        } catch (Exception e) { }
+        } catch (Exception e) {
+        	throw e;
+        }
 
         try {
             /* Action 3: IF (ptpSolicitudAE.Tramite <> 2 OR ptpSolicitudAE.tipoContrato <> 3 OR ptpSolicitudAE.NumFamilia <> NULL) */
@@ -157,7 +198,7 @@ public class GlobalServicesService extends AbstractService {
                     solicitudSrv.setCodTarifaTxn(step30Request);
                     globalServicesRepository.refreshEntity(oGENERARSOLICITUD2ptpSolicitudAE);
             }
-        } catch (Exception e) { }
+        } catch (Exception e) { response.setOGENERARSOLICITUD2ptpsErrorWS(e.getMessage()); }
 
         try {
             for(ErrorWS step4Entity : globalServicesRepository.assocOperator102(oGENERARSOLICITUD2ptpSolicitudAE)) {
@@ -165,10 +206,10 @@ public class GlobalServicesService extends AbstractService {
                     com.keralty.aegenerasolicitud.viewmodel.errorws.siu.EliminarRequest step4Request = new com.keralty.aegenerasolicitud.viewmodel.errorws.siu.EliminarRequest();
                     step4Request.setErrorWSeliminarpthisErrorWSInstance(step4Entity);
                     errorWSSrv.eliminarTxn(step4Request);
-                } catch (Exception e) { }
+        } catch (Exception e) { response.setOGENERARSOLICITUD2ptpsErrorWS(e.getMessage()); }
                 globalServicesRepository.refreshEntity(oGENERARSOLICITUD2ptpSolicitudAE);
             }
-        } catch (Exception e) { }
+        } catch (Exception e) { response.setOGENERARSOLICITUD2ptpsErrorWS(e.getMessage()); }
 
         try {
             /* Action 5: IF (ptpSolicitudAE.UsuariosValidados = true) */
@@ -204,7 +245,7 @@ public class GlobalServicesService extends AbstractService {
                             com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGCREARACTPERSONACOREResponse step52Response = globalServicesSrv.tGCREARACTPERSONACORETxn(step52Request);
                             response.setOGENERARSOLICITUD2ptpsErrorWS(step52Response.getTGCREARACTPERSONACOREpsSalida());
                             
-                        } catch (Exception e) { }
+        } catch (Exception e) { response.setOGENERARSOLICITUD2ptpsErrorWS(e.getMessage()); }
                         globalServicesRepository.refreshEntity(oGENERARSOLICITUD2ptpSolicitudAE);
                 }
                 /* Action 53: IF (EXIST (ptpSolicitudAE.ErroresWS) = false) */
@@ -289,7 +330,7 @@ public class GlobalServicesService extends AbstractService {
                     solicitudSrv.marcarNoCompletadaTxn(step56Request);
                     globalServicesRepository.refreshEntity(oGENERARSOLICITUD2ptpSolicitudAE);
             }
-        } catch (Exception e) { }
+        } catch (Exception e) { response.setOGENERARSOLICITUD2ptpsErrorWS(e.getMessage()); }
 
         try {
             com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.DummyDevolverErroresWSRequest step6Request = new com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.DummyDevolverErroresWSRequest();
@@ -297,7 +338,7 @@ public class GlobalServicesService extends AbstractService {
             com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.DummyDevolverErroresWSResponse step6Response = solicitudSrv.dummyDevolverErroresWSTxn(step6Request);
             response.setOGENERARSOLICITUD2ptpsErrorWS(step6Response.getSolicituddummyDevolverErroresWSpsErroresWS());
             globalServicesRepository.refreshEntity(oGENERARSOLICITUD2ptpSolicitudAE);
-        } catch (Exception e) { }
+        } catch (Exception e) { response.setOGENERARSOLICITUD2ptpsErrorWS(e.getMessage()); }
         return response;
     }
 
@@ -429,15 +470,95 @@ public class GlobalServicesService extends AbstractService {
         Persona tGCREARPERSONACOREptPersona = request.getTGCREARPERSONACOREptPersonaInstance();
         ProteccionDatos tGCREARPERSONACOREptProtDatos = request.getTGCREARPERSONACOREptProtDatosInstance();
 
-        request.checkArguments();
-
-        /* Action 1: IF (1 > 2) */
-        boolean ifCondition1 = Long.valueOf(1) > Long.valueOf(2);
-        if (ifCondition1) {
-            com.keralty.aegenerasolicitud.viewmodel.rol.siu.CrearRequest step10Request = new com.keralty.aegenerasolicitud.viewmodel.rol.siu.CrearRequest();
-            step10Request.setRolcrearpatrNombre(response.getTGCREARPERSONACOREpsSalida());
-            rolSrv.crearImplementation(step10Request);
+        CrearActualizarPersonaRequest requestCrearPersona = new CrearActualizarPersonaRequest();
+        if (request.getTGCREARPERSONACOREptPersonaInstance().getUsuarios() != null && !request.getTGCREARPERSONACOREptPersonaInstance().getUsuarios().isNull()) {
+        	requestCrearPersona.setNumSolicitud( request.getTGCREARPERSONACOREptPersonaInstance().getUsuarios().getSolicitud().getSolicitudNumRadicado().toString());	
         }
+        if (tGCREARPERSONACOREptProtDatos != null && !tGCREARPERSONACOREptProtDatos.isNull() 
+        		&& tGCREARPERSONACOREptProtDatos.getSolicitud() != null && !tGCREARPERSONACOREptProtDatos.getSolicitud().isNull()) {
+        	requestCrearPersona.setNumSolicitud(tGCREARPERSONACOREptProtDatos.getSolicitud().getSolicitudNumRadicado().toString());
+        }
+        requestCrearPersona.setTipoIdentificacion(request.getTGCREARPERSONACOREptPersonaInstance().getTipoIdentificacion().getTipoIdentificacionNombreCorto());
+        requestCrearPersona.setNumeroIdentificacion(request.getTGCREARPERSONACOREptPersonaInstance().getPersonaNumIdentificacion());
+        requestCrearPersona.setFechaNacimiento(request.getTGCREARPERSONACOREptPersonaInstance().getPersonaFechaNacimiento());
+        requestCrearPersona.setGenero(request.getTGCREARPERSONACOREptPersonaInstance().getPersonaGenero());
+        requestCrearPersona.setEstadoCivil(request.getTGCREARPERSONACOREptPersonaInstance().getEstadoCivil().getEstadoCivilCodigo().toString());
+        requestCrearPersona.setPrimerNombre(request.getTGCREARPERSONACOREptPersonaInstance().getPersonaPrimerNombre());
+        requestCrearPersona.setSegundoNombre(request.getTGCREARPERSONACOREptPersonaInstance().getPersonaSegundoNombre());
+        requestCrearPersona.setPrimerApellido(request.getTGCREARPERSONACOREptPersonaInstance().getPersonaPrimerApellido());
+        requestCrearPersona.setSegundoApellido(request.getTGCREARPERSONACOREptPersonaInstance().getPersonaSegundoApellido());
+        requestCrearPersona.setCodigoMunicioNacimiento(
+        		request.getTGCREARPERSONACOREptPersonaInstance().getMunicipioNacimiento() != null && !request.getTGCREARPERSONACOREptPersonaInstance().getMunicipioNacimiento().isNull() ? 
+				request.getTGCREARPERSONACOREptPersonaInstance().getMunicipioNacimiento().getMunicipioCodigoLegal() : null);
+        requestCrearPersona.setCodigoDepartamentoNacimiento(
+        		request.getTGCREARPERSONACOREptPersonaInstance().getDepartamentoNacimiento() != null && !request.getTGCREARPERSONACOREptPersonaInstance().getDepartamentoNacimiento().isNull() ?
+        		request.getTGCREARPERSONACOREptPersonaInstance().getDepartamentoNacimiento().getDepartamentoCodigoLegal() : null);
+        requestCrearPersona.setForeing(request.getTGCREARPERSONACOREptPersonaInstance().getPersonaIndicadorExtranjero());
+
+        // Direcciones
+        boolean tieneDirResidencia = false;
+        boolean tieneDirCorrespondencia = false;
+        for (Direccion dirPersona : request.getTGCREARPERSONACOREptPersonaInstance().getDirecciones()) {
+        	if (dirPersona.getTipoDireccion().getTipoDireccionEsResidencia()) {
+        		requestCrearPersona.setDireccionResidencia(dirPersona.getDireccionDireccionCompleta());
+        		requestCrearPersona.setMunicipioResidencia(dirPersona.getMunicipio().getMunicipioCodigoLegal());
+        		requestCrearPersona.setDepartamentoResidencia(dirPersona.getDepartamento().getDepartamentoCodigoLegal());
+        		if (dirPersona.getPais() != null && !dirPersona.getPais().isNull()) {
+        			requestCrearPersona.setPaisResidencia(dirPersona.getPais().getPaisCodigo());
+        		}
+        		tieneDirResidencia = true;
+        	} else {
+        		requestCrearPersona.setDireccionCorrespondencia(dirPersona.getDireccionDireccionCompleta());
+        		requestCrearPersona.setMunicipioCorrespondencia(dirPersona.getMunicipio().getMunicipioCodigoLegal());
+        		requestCrearPersona.setDepartamentoCorrespondencia(dirPersona.getDepartamento().getDepartamentoCodigoLegal());
+        		if (dirPersona.getPais() != null && !dirPersona.getPais().isNull()) {
+        			requestCrearPersona.setPaisCorrespondencia(dirPersona.getPais().getPaisCodigo());
+        		}
+        		tieneDirCorrespondencia = true;
+        	}
+        }
+        
+        // Telefonos, solo si tiene la direccin correspondiente. Para evitar errores en BH
+        if (tieneDirResidencia) {
+	        requestCrearPersona.setTelefonoFijoResidencia(request.getTGCREARPERSONACOREptPersonaInstance().getPersonaTelefonoFijo());
+	        requestCrearPersona.setTelefonoCelularResidencia(request.getTGCREARPERSONACOREptPersonaInstance().getPersonaTelefonoCelular());
+        }
+        requestCrearPersona.setCorreoElectronico(request.getTGCREARPERSONACOREptPersonaInstance().getPersonaCorreoElectronico());
+
+        if (tieneDirCorrespondencia) {
+	        if (request.getTGCREARPERSONACOREptPersonaInstance().getSolicitudesContratante() != null &&
+	        		!request.getTGCREARPERSONACOREptPersonaInstance().getSolicitudesContratante().isEmpty()) {
+	        	for (Solicitud solicitud : request.getTGCREARPERSONACOREptPersonaInstance().getSolicitudesContratante()) {
+	        		if (solicitud.getContratante() != null && !solicitud.getContratante().isNull()) {
+	        			requestCrearPersona.setTelefonoFijoCorrespondencia(solicitud.getContratante().getContratanteTelefonoFijo());
+	        			requestCrearPersona.setTelefonoCelularCorrespondencia(solicitud.getContratante().getContratanteTelefonoCelular());
+	        		}
+	        	}
+	        }
+	
+	        if (request.getTGCREARPERSONACOREptPersonaInstance().getSolicitudesTitular() != null &&
+	        		!request.getTGCREARPERSONACOREptPersonaInstance().getSolicitudesTitular().isEmpty()) {
+	        	for (Solicitud solicitud : request.getTGCREARPERSONACOREptPersonaInstance().getSolicitudesTitular()) {
+	        		if (solicitud.getTitular() != null && !solicitud.getTitular().isNull()) {
+	        			requestCrearPersona.setTelefonoFijoCorrespondencia(solicitud.getTitular().getTitularTelefonoFijoDC());
+	        			requestCrearPersona.setTelefonoCelularCorrespondencia(solicitud.getTitular().getTitularTelefonoCelularDC());
+	        		}
+	        	}
+	        }
+        }
+        
+        CrearActualizarPersonaResponse crearPersonaResponse = bhCallService.crearPersona(requestCrearPersona );
+		
+		String result = "";
+		if (crearPersonaResponse.isExito()) {
+	        // Retornamos el codigo asignado por el CORE a la nueva persona
+			result = "OK" + crearPersonaResponse.getCodigoPersona();
+		} else {
+			result = crearPersonaResponse.getTextoError();
+		}
+        
+
+        response.setTGCREARPERSONACOREpsSalida(result);
         return response;
     }
 
@@ -485,15 +606,74 @@ public class GlobalServicesService extends AbstractService {
         ProteccionDatos tGACTPERSONAENCOREptPrtoDatos = request.getTGACTPERSONAENCOREptPrtoDatosInstance();
         Solicitud tGACTPERSONAENCOREptSolicitud = request.getTGACTPERSONAENCOREptSolicitudInstance();
 
-        request.checkArguments();
+        CrearActualizarPersonaRequest requestActualizar = new CrearActualizarPersonaRequest();
+        requestActualizar.setNumSolicitud(tGACTPERSONAENCOREptSolicitud.getSolicitudNumRadicado().toString());
+        requestActualizar.setCodigo(tGACTPERSONAENCOREptPersona.getPersonaCodigo().toString());
+        requestActualizar.setTipoIdentificacion(tGACTPERSONAENCOREptPersona.getTipoIdentificacion().getTipoIdentificacionNombreCorto());
+        requestActualizar.setNumeroIdentificacion(tGACTPERSONAENCOREptPersona.getPersonaNumIdentificacion());
+        requestActualizar.setFechaNacimiento(tGACTPERSONAENCOREptPersona.getPersonaFechaNacimiento());
+        requestActualizar.setGenero(tGACTPERSONAENCOREptPersona.getPersonaGenero());
+        requestActualizar.setEstadoCivil(tGACTPERSONAENCOREptPersona.getEstadoCivil() != null ? 
+        		tGACTPERSONAENCOREptPersona.getEstadoCivil().getEstadoCivilCodigo().toString() : null);
+        requestActualizar.setPrimerNombre(tGACTPERSONAENCOREptPersona.getPersonaPrimerNombre());
+        requestActualizar.setSegundoNombre(tGACTPERSONAENCOREptPersona.getPersonaSegundoNombre());
+        requestActualizar.setPrimerApellido(tGACTPERSONAENCOREptPersona.getPersonaPrimerApellido());
+        requestActualizar.setSegundoApellido(tGACTPERSONAENCOREptPersona.getPersonaSegundoApellido());
+        requestActualizar.setCodigoMunicioNacimiento(tGACTPERSONAENCOREptPersona.getMunicipioNacimiento() != null ?
+        		tGACTPERSONAENCOREptPersona.getMunicipioNacimiento().getMunicipioCodigoLegal() : null);
+        requestActualizar.setCodigoDepartamentoNacimiento(tGACTPERSONAENCOREptPersona.getDepartamentoNacimiento() != null ?
+        		tGACTPERSONAENCOREptPersona.getDepartamentoNacimiento().getDepartamentoCodigoLegal() : null);
+        requestActualizar.setForeing(tGACTPERSONAENCOREptPersona.getPersonaIndicadorExtranjero());
 
-        /* Action 1: IF (1 > 2) */
-        boolean ifCondition1 = Long.valueOf(1) > Long.valueOf(2);
-        if (ifCondition1) {
-            com.keralty.aegenerasolicitud.viewmodel.rol.siu.CrearRequest step10Request = new com.keralty.aegenerasolicitud.viewmodel.rol.siu.CrearRequest();
-            step10Request.setRolcrearpatrNombre(response.getTGACTPERSONAENCOREpsSalida());
-            rolSrv.crearImplementation(step10Request);
+        requestActualizar.setCorreoElectronico(tGACTPERSONAENCOREptPersona.getPersonaCorreoElectronico());
+        
+        // Direcciones
+        boolean tieneDirResidencia = false;
+        boolean tieneDirCorrespondencia = false;
+        for (Direccion dir : tGACTPERSONAENCOREptPersona.getDirecciones()) {
+        	if (dir.getTipoDireccion().getTipoDireccionEsResidencia()) {
+        		requestActualizar.setDepartamentoResidencia(dir.getDepartamento() != null && !dir.getDepartamento().isNull() ? dir.getDepartamento().getDepartamentoCodigoLegal() : null);
+        		requestActualizar.setMunicipioResidencia(dir.getMunicipio() != null && !dir.getMunicipio().isNull() ? dir.getMunicipio().getMunicipioCodigoLegal() : null);
+        		//requestActualizar.setPaisResidencia("");
+        		requestActualizar.setDireccionResidencia(dir.getDireccionDireccionCompleta());
+        		tieneDirResidencia = true;
+        	}
+        	if (dir.getTipoDireccion().getTipoDireccionEsCorrespondencia()) {
+        		requestActualizar.setDepartamentoCorrespondencia(dir.getDepartamento() != null && !dir.getDepartamento().isNull() ? dir.getDepartamento().getDepartamentoCodigoLegal() : null);
+        		requestActualizar.setMunicipioCorrespondencia(dir.getMunicipio() != null && !dir.getMunicipio().isNull() ? dir.getMunicipio().getMunicipioCodigoLegal() : null);
+        		//requestActualizar.setPaisResidencia("");
+        		requestActualizar.setDireccionCorrespondencia(dir.getDireccionDireccionCompleta());
+        		tieneDirCorrespondencia = true;
+        	}
         }
+        
+        // Telefonos de residencia
+        if (tieneDirResidencia) {
+			requestActualizar.setTelefonoFijoResidencia(tGACTPERSONAENCOREptPersona.getPersonaTelefonoFijo());
+			requestActualizar.setTelefonoCelularResidencia(tGACTPERSONAENCOREptPersona.getPersonaTelefonoCelular());
+        }
+        
+        // Telefonos de correspondencia
+        if (tieneDirCorrespondencia) {
+			// Si es el contratante
+			if (tGACTPERSONAENCOREptSolicitud.getContratante() != null && !tGACTPERSONAENCOREptSolicitud.getContratante().isNull() && 
+					tGACTPERSONAENCOREptSolicitud.getContratante().getContratanteNumIdentificacion().equalsIgnoreCase(tGACTPERSONAENCOREptPersona.getPersonaNumIdentificacion()) &&
+					tGACTPERSONAENCOREptSolicitud.getContratante().getTipoIdentificacion().getTipoIdentificacionCodigo().equals(tGACTPERSONAENCOREptPersona.getTipoIdentificacion().getTipoIdentificacionCodigo() )) {
+				requestActualizar.setTelefonoFijoCorrespondencia(tGACTPERSONAENCOREptSolicitud.getContratante().getContratanteTelefonoFijo() );
+				requestActualizar.setTelefonoCelularCorrespondencia( tGACTPERSONAENCOREptSolicitud.getContratante().getContratanteTelefonoCelular());
+			}
+			// Si es el Titular
+			if (tGACTPERSONAENCOREptSolicitud.getTitular() != null && !tGACTPERSONAENCOREptSolicitud.getTitular().isNull() && 
+					tGACTPERSONAENCOREptSolicitud.getTitular().getTitularNumIdentificacion().equalsIgnoreCase(tGACTPERSONAENCOREptPersona.getPersonaNumIdentificacion()) &&
+					tGACTPERSONAENCOREptSolicitud.getTitular().getTipoIdentificacion().getTipoIdentificacionCodigo().equals(tGACTPERSONAENCOREptPersona.getTipoIdentificacion().getTipoIdentificacionCodigo() )) {
+				requestActualizar.setTelefonoFijoCorrespondencia(tGACTPERSONAENCOREptSolicitud.getTitular().getTitularTelefonoFijoDC() );
+				requestActualizar.setTelefonoCelularCorrespondencia( tGACTPERSONAENCOREptSolicitud.getTitular().getTitularTelefonoCelularDC());
+			}
+        }
+        
+        CrearActualizarPersonaResponse crearPersonaResponse = bhCallService.actualizarPersona(requestActualizar );
+        
+		response.setTGACTPERSONAENCOREpsSalida(crearPersonaResponse.getTextoError());
         return response;
     }
 
@@ -537,14 +717,74 @@ public class GlobalServicesService extends AbstractService {
         com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGCREARCONTRATOCOREResponse response = new com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGCREARCONTRATOCOREResponse();
         Solicitud tGCREARCONTRATOCOREptSolicitud = request.getTGCREARCONTRATOCOREptSolicitudInstance();
 
-        request.checkArguments();
+        // Crear contrato
+        Boolean psError = Boolean.FALSE;
+        String usuario = getAgentFuncionario().getFuncionarioUsuario();
+        DatoRespuestaContrato rptaCrearContrato = null;
+        try {
+            rptaCrearContrato = contratoMPRestUtils.crearContratoMP(tGCREARCONTRATOCOREptSolicitud, usuario, this.userFunctionsSrv);
+                	
+            if (rptaCrearContrato.getErrorCode() != null && !rptaCrearContrato.getErrorCode().isEmpty()) {
+            	psError = Boolean.TRUE;
+            	// Grabamos los errores en ErroresWS
+        		for (String msgError : rptaCrearContrato.getMensajesDeError()){
+        			guardarErrorWS(tGCREARCONTRATOCOREptSolicitud, msgError);
+        		}
+            } else {
+            	psError= Boolean.FALSE;
+            }
+        } catch(ModelException | SystemException e) {
+        	psError = Boolean.TRUE;
+			org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error(e.getMessage());
+			guardarErrorWS(tGCREARCONTRATOCOREptSolicitud, SystemException.GENERIC_EXCEPTION_MESSAGE);
+		} catch(Exception e) {
+			org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error(e.getMessage());
+			guardarErrorWS(tGCREARCONTRATOCOREptSolicitud, SystemException.GENERIC_EXCEPTION_MESSAGE);
+        	psError = Boolean.TRUE;
+		}
 
-        com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.DummyDevolverIntStringRequest step1Request = new com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.DummyDevolverIntStringRequest();
-        step1Request.setSolicituddummyDevolverIntStringpthisSolicitudInstance(tGCREARCONTRATOCOREptSolicitud);
-        com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.DummyDevolverIntStringResponse step1Response = solicitudSrv.dummyDevolverIntStringImplementation(step1Request);
-        response.setTGCREARCONTRATOCOREpsError(step1Response.getSolicituddummyDevolverIntStringpsBool());
+        // Guardamos las llamadas realizadas a BH
+        guardarLlamadasBH(rptaCrearContrato);
         
+        response.setTGCREARCONTRATOCOREpsError(psError);
         return response;
+    }
+
+    private void guardarLlamadasBH(DatoRespuestaContrato rptaCrearContrato) {
+    	if (rptaCrearContrato != null) {
+        	for (DatoLogLlamadaBH llamada : rptaCrearContrato.getDatosLlamadasBH()) {
+        		try {
+	        		com.keralty.aegenerasolicitud.viewmodel.logllamadasbh.siu.CreateinstanceRequest request = new com.keralty.aegenerasolicitud.viewmodel.logllamadasbh.siu.CreateinstanceRequest();
+	        		request.setLogLlamadasBHcreateinstancepatrCapacidad(llamada.getCapacidad());
+	        		request.setLogLlamadasBHcreateinstancepatrFechaHora(llamada.getFechaHora());
+	        		request.setLogLlamadasBHcreateinstancepatrPeticion(llamada.getPeticion());
+	        		request.setLogLlamadasBHcreateinstancepatrRespuesta(llamada.getRespuesta());
+	        		request.setLogLlamadasBHcreateinstancepatrServicio(llamada.getServicio());
+	        		request.setLogLlamadasBHcreateinstancepatrSolicitud(llamada.getSolicitud());
+	        		request.setLogLlamadasBHcreateinstancepatrTextoError(llamada.getTextoError());
+	        		request.setLogLlamadasBHcreateinstancepatrTiempoEjecucion(llamada.getTiempoEjecucion());
+	        		request.setLogLlamadasBHcreateinstancepatrTipoServicio(llamada.getTipoServicio());
+	        		request.setLogLlamadasBHcreateinstancepatrUsuario(llamada.getUsuario());
+					logLlamadasBHSrv.createinstanceImplementation(request );
+        		} catch(Exception e) {
+        			org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error("ERR Guardando llamada BH. " + e.getMessage());
+        		}
+        	}
+        }
+	}
+
+	private void guardarErrorWS(Solicitud solicitud, String msgError) {
+		CrearRequest reqCrear = new CrearRequest();
+		reqCrear.setErrorWScrearpagrSolicitudInstance(solicitud);
+		reqCrear.setErrorWScrearpatrDescripcion(msgError);
+		try {
+			ServiceResponse resp = errorWSSrv.crearImplementation(reqCrear);
+			if (!"000".equalsIgnoreCase(resp.getResultCode())) {
+				org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error(resp.getResultDescription());
+			}
+		} catch(Exception e) {
+			org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error(e.getMessage());
+		}
     }
 
     /*
@@ -587,14 +827,36 @@ public class GlobalServicesService extends AbstractService {
         com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGINCLUSIONCONTRATOCOREResponse response = new com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGINCLUSIONCONTRATOCOREResponse();
         Solicitud tGINCLUSIONCONTRATOCOREptSolicitud = request.getTGINCLUSIONCONTRATOCOREptSolicitudInstance();
 
-        request.checkArguments();
+        Boolean psError = Boolean.FALSE;
+        String usuario = getAgentFuncionario().getFuncionarioUsuario();
+        DatoRespuestaContrato rptaCrearContrato = null;
+        try {
+        	rptaCrearContrato = contratoMPRestUtils.inclusionBeneficiario(tGINCLUSIONCONTRATOCOREptSolicitud, usuario, this.userFunctionsSrv);
+                	
+            if (rptaCrearContrato.getErrorCode() != null && !rptaCrearContrato.getErrorCode().isEmpty()) {
+            	psError = Boolean.TRUE;
+            	// Grabamos los errores en ErroresWS
+        		for (String msgError : rptaCrearContrato.getMensajesDeError()){
+        			guardarErrorWS(tGINCLUSIONCONTRATOCOREptSolicitud, msgError);
+        		}
+            } else {
+            	psError= Boolean.FALSE;
+            }
+        } catch(ModelException | SystemException e) {
+        	psError = Boolean.TRUE;
+			org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error(e.getMessage());
+			guardarErrorWS(tGINCLUSIONCONTRATOCOREptSolicitud, SystemException.GENERIC_EXCEPTION_MESSAGE);
+		} catch(Exception e) {
+			org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error(e.getMessage());
+			guardarErrorWS(tGINCLUSIONCONTRATOCOREptSolicitud, SystemException.GENERIC_EXCEPTION_MESSAGE);
+        	psError = Boolean.TRUE;
+		}
 
-        com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.DummyDevolverIntStringRequest step1Request = new com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.DummyDevolverIntStringRequest();
-        step1Request.setSolicituddummyDevolverIntStringpthisSolicitudInstance(tGINCLUSIONCONTRATOCOREptSolicitud);
-        com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.DummyDevolverIntStringResponse step1Response = solicitudSrv.dummyDevolverIntStringImplementation(step1Request);
-        response.setTGINCLUSIONCONTRATOCOREpsError(step1Response.getSolicituddummyDevolverIntStringpsBool());
-        
-        return response;
+        // Guardamos las llamadas realizadas a BH
+        guardarLlamadasBH(rptaCrearContrato);
+
+        response.setTGINCLUSIONCONTRATOCOREpsError(psError);
+        return response;        
     }
 
     /*
@@ -941,6 +1203,7 @@ public class GlobalServicesService extends AbstractService {
         request.checkArguments();
 
         /* Action 1: IF (ptPersona.TipoIdentificacion.NIT = false) */
+        boolean personaVieneDeCORE = tGCREARACTPERSONACOREptPersona.getPersonadrvVieneDeCORE();
         boolean ifCondition1 = tGCREARACTPERSONACOREptPersona.getTipoIdentificacion().getTipoIdentificacionNIT().equals(false);
         if (ifCondition1) {
             /* Action 10: IF (ptPersona.drvVieneDeCORE = true) */
@@ -1009,6 +1272,72 @@ public class GlobalServicesService extends AbstractService {
                 }
             }
         }
+
+        // Creamos el cuestionario medico
+        if (tGCREARACTPERSONACOREptPersona.getUsuarios() != null && !tGCREARACTPERSONACOREptPersona.getUsuarios().isNull()) {
+        	if( tGCREARACTPERSONACOREptPersona.getUsuarios().getCuestionarioP() != null && 
+        		!tGCREARACTPERSONACOREptPersona.getUsuarios().getCuestionarioP().isNull()) {
+        		
+        		// Si tiene cuestionario medico, lo enviamos a BH
+	        	CrearActualizarCuestionarioRequest cuestionarioRequest = new CrearActualizarCuestionarioRequest();
+	        	cuestionarioRequest.setNumSolicitud(tGCREARACTPERSONACOREptSolicitud.getSolicitudNumRadicado().toString());
+	        	cuestionarioRequest.setTipoIdentificacion(tGCREARACTPERSONACOREptPersona.getTipoIdentificacion().getTipoIdentificacionNombreCorto());
+	        	cuestionarioRequest.setNumeroIdentificacion(tGCREARACTPERSONACOREptPersona.getPersonaNumIdentificacion());
+	        	cuestionarioRequest.setRespuestas(new ArrayList<RespuestaCuestionario>());
+	        	RespuestaCuestionario respuesta = null;
+	        	for (SeccionP seccion : tGCREARACTPERSONACOREptPersona.getUsuarios().getCuestionarioP().getSecciones()) {
+	        		for (PreguntaP resp :  seccion.getPreguntas()) {
+	        			if (resp.getPreguntaPSeEnviaACORE()) {
+	        				respuesta = new RespuestaCuestionario();
+	        				respuesta.setPregunta(resp.getPreguntaPNumero().toString());
+	        				respuesta.setRespuestaBool(resp.getPreguntaPRespuestaSiNo());
+	        				respuesta.setRespuestaString(resp.getPreguntaPdrvRespuesta());
+	        				cuestionarioRequest.getRespuestas().add(respuesta);
+	        			}
+	        		}
+	        	}
+	        	String resultado = bhCallService.crearActualizarCuestionarioMedico(cuestionarioRequest);
+	        	if (resultado != null && !resultado.isEmpty()) {
+	                com.keralty.aegenerasolicitud.viewmodel.errorws.siu.CrearRequest errorRequest = new com.keralty.aegenerasolicitud.viewmodel.errorws.siu.CrearRequest();
+	                errorRequest.setErrorWScrearpagrSolicitudInstance(tGCREARACTPERSONACOREptSolicitud);
+	                errorRequest.setErrorWScrearpatrDescripcion("Error en cuestionario médico de la persona " + 
+		                tGCREARACTPERSONACOREptPersona.getTipoIdentificacion().getTipoIdentificacionNombreCorto() + 
+		                tGCREARACTPERSONACOREptPersona.getPersonaNumIdentificacion());
+	                errorWSSrv.crearImplementation(errorRequest);
+	        	}
+        	} else if (!personaVieneDeCORE &&
+        			    tGCREARACTPERSONACOREptSolicitud.getSolicituddrvReqCuesMed() &&
+				        tGCREARACTPERSONACOREptPersona.getUsuarios().getTipoIdentificacion().getTipoIdentificacionMenorSinIdentificar()) {
+
+				// Si no tiene cuestionario medico
+        		// Para personas que no existan en BH.
+        		// Si el plan indica que debe tenerlo 
+				//  mandamos al CORE la pregunta 108 con el texto que corresponda según parametrización
+
+        		String textoComentarios = userFunctionsSrv.fugetValorParametroConfFun("COMENTARIOSPREGUNTA108");
+	        	CrearActualizarCuestionarioRequest cuestionarioRequest = new CrearActualizarCuestionarioRequest();
+	        	cuestionarioRequest.setNumSolicitud(tGCREARACTPERSONACOREptSolicitud.getSolicitudNumRadicado().toString());
+	        	cuestionarioRequest.setTipoIdentificacion(tGCREARACTPERSONACOREptPersona.getTipoIdentificacion().getTipoIdentificacionNombreCorto());
+	        	cuestionarioRequest.setNumeroIdentificacion(tGCREARACTPERSONACOREptPersona.getPersonaNumIdentificacion());
+	        	cuestionarioRequest.setRespuestas(new ArrayList<RespuestaCuestionario>());
+	        	RespuestaCuestionario respuesta = new RespuestaCuestionario();
+				respuesta.setPregunta("108");
+				respuesta.setRespuestaBool(true);
+				respuesta.setRespuestaString(textoComentarios);
+				cuestionarioRequest.getRespuestas().add(respuesta);
+
+	        	String resultado = bhCallService.crearActualizarCuestionarioMedico(cuestionarioRequest);
+	        	if (resultado != null && !resultado.isEmpty()) {
+	                com.keralty.aegenerasolicitud.viewmodel.errorws.siu.CrearRequest errorRequest = new com.keralty.aegenerasolicitud.viewmodel.errorws.siu.CrearRequest();
+	                errorRequest.setErrorWScrearpagrSolicitudInstance(tGCREARACTPERSONACOREptSolicitud);
+	                errorRequest.setErrorWScrearpatrDescripcion("Error en cuestionario médico de la persona " + 
+		                tGCREARACTPERSONACOREptPersona.getTipoIdentificacion().getTipoIdentificacionNombreCorto() + 
+		                tGCREARACTPERSONACOREptPersona.getPersonaNumIdentificacion());
+	                errorWSSrv.crearImplementation(errorRequest);
+	        	}
+        	}
+        }
+        
         return response;
     }
 
@@ -1053,16 +1382,17 @@ public class GlobalServicesService extends AbstractService {
         Solicitud tGACTDIRECCIONESptSolicitud = request.getTGACTDIRECCIONESptSolicitudInstance();
         Long tGACTDIRECCIONESptTipo = request.getTGACTDIRECCIONESptTipo();
 
-        request.checkArguments();
-
-        /* Action 1: IF (1 > 2) */
-        boolean ifCondition1 = Long.valueOf(1) > Long.valueOf(2);
-        if (ifCondition1) {
-            com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.DummyDevolverIntStringRequest step10Request = new com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.DummyDevolverIntStringRequest();
-            step10Request.setSolicituddummyDevolverIntStringpthisSolicitudInstance(tGACTDIRECCIONESptSolicitud);
-            solicitudSrv.dummyDevolverIntStringImplementation(step10Request);
-            
-            
+        // TODO: Pendiente implementacion
+        String resultado = "";
+        if (tGACTDIRECCIONESptTipo == 1) {
+        	//resultado = PersonaCrearActualizarUtils.actualizarDireccionesPersona(serCtx, ptSolicitud.getContratantePersona(), ptSolicitud.getContratante().getTelefonoFijoRes(), ptSolicitud.getContratante().getTelefonoCelularRes(), ptSolicitud.getContratante().getTelefonoFijo(), ptSolicitud.getContratante().getTelefonoCelular(), ptSolicitud.getAE_SOLICITUDES().getNUMERO_SOLICITUD()); 
+        }
+        if (tGACTDIRECCIONESptTipo == 2) {
+        	//resultado = PersonaCrearActualizarUtils.actualizarDireccionesPersona(serCtx, ptSolicitud.getTitularPersona(), ptSolicitud.getTitular().getTelefonoFijo(), ptSolicitud.getTitular().getTelefonoCelular(), ptSolicitud.getTitular().getTelefonoFijoDC(), ptSolicitud.getTitular().getTelefonoCelularDC(), ptSolicitud.getAE_SOLICITUDES().getNUMERO_SOLICITUD());
+        }
+        
+        if (resultado != null && !resultado.isEmpty()){
+        	guardarErrorWS(tGACTDIRECCIONESptSolicitud, resultado);
         }
         return response;
     }
@@ -1123,13 +1453,14 @@ public class GlobalServicesService extends AbstractService {
      * @return Service response viewmodel with the execution results
      */
     @Transactional(Transactional.TxType.NOT_SUPPORTED)
-    public com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRNEWResponse tGRPTACTRNEW(
-            com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRNEWRequest request) {
-        com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRNEWResponse response = new com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRNEWResponse();
+    public ContractResponseResponse tGRPTACTRNEW(
+    		ContractResponseRequest request) {
+    	ContractResponseResponse response = new ContractResponseResponse();
         try {
             response = globalServicesSrv.tGRPTACTRNEWTxn(request);
         } catch (Exception e) {
-            response.setException(e);
+        	response.addError("A0010", e.getMessage());
+            
         }
         return response;
     }
@@ -1140,8 +1471,8 @@ public class GlobalServicesService extends AbstractService {
      * @return Service response viewmodel with the execution results
      */
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRNEWResponse tGRPTACTRNEWTxn(
-            com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRNEWRequest request) throws ModelException, SystemException {
+    public ContractResponseResponse tGRPTACTRNEWTxn(
+    		ContractResponseRequest request) throws ModelException, SystemException {
         return globalServicesSrv.tGRPTACTRNEWImplementation(request);
     }
 
@@ -1151,60 +1482,236 @@ public class GlobalServicesService extends AbstractService {
      * @return Service response viewmodel with the execution results
      */
     @Transactional(Transactional.TxType.REQUIRED)
-    public com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRNEWResponse tGRPTACTRNEWImplementation(
-            com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRNEWRequest request) throws ModelException, SystemException {
-        com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRNEWResponse response = new com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRNEWResponse();
-        String tGRPTACTRNEWargumentos = request.getTGRPTACTRNEWargumentos();
-
-        request.checkArguments();
-
-        /* Action 1: IF (1 > 2) */
-        boolean ifCondition1 = Long.valueOf(1) > Long.valueOf(2);
-        if (ifCondition1) {
-            for(Solicitud step1010Entity : globalServicesRepository.assocOperator154()) {
-                com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TCAMBIARESTADORequest step10Request = new com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TCAMBIARESTADORequest();
-                step10Request.setSolicitudTCAMBIARESTADOpthisSolicitudInstance(step1010Entity);
-                step10Request.setSolicitudTCAMBIARESTADOptpeEstado(Long.valueOf(0));
-                step10Request.setSolicitudTCAMBIARESTADOptObservaciones("");
-                step10Request.setSolicitudTCAMBIARESTADOptMotDevolucion("");
-                solicitudSrv.tCAMBIARESTADOImplementation(step10Request);
-            }
-            for(Solicitud step1011Entity : globalServicesRepository.assocOperator155()) {
-                com.keralty.aegenerasolicitud.viewmodel.errorws.siu.CrearRequest step11Request = new com.keralty.aegenerasolicitud.viewmodel.errorws.siu.CrearRequest();
-                step11Request.setErrorWScrearpagrSolicitudInstance(step1011Entity);
-                step11Request.setErrorWScrearpatrDescripcion("");
-                errorWSSrv.crearImplementation(step11Request);
-            }
-            com.keralty.aegenerasolicitud.viewmodel.logllamadasae.siu.CreateinstanceRequest step12Request = new com.keralty.aegenerasolicitud.viewmodel.logllamadasae.siu.CreateinstanceRequest();
-            step12Request.setLogLlamadasAEcreateinstancepatrFechaHora(STDFunctions.systemDateTimeFun());
-            step12Request.setLogLlamadasAEcreateinstancepatrCapacidad("");
-            step12Request.setLogLlamadasAEcreateinstancepatrServicio("");
-            step12Request.setLogLlamadasAEcreateinstancepatrSolicitud("");
-            step12Request.setLogLlamadasAEcreateinstancepatrDatosRecibidos("");
-            step12Request.setLogLlamadasAEcreateinstancepatrDatosEnviados("");
-            step12Request.setLogLlamadasAEcreateinstancepatrTipoServicio("");
-            step12Request.setLogLlamadasAEcreateinstancepatrTiempoEjecucion(Utilities.convertToDouble(Long.valueOf(0)));
-            step12Request.setLogLlamadasAEcreateinstancepatrTextoError("");
-            logLlamadasAESrv.createinstanceImplementation(step12Request);
-            com.keralty.aegenerasolicitud.viewmodel.logllamadasbh.siu.CreateinstanceRequest step13Request = new com.keralty.aegenerasolicitud.viewmodel.logllamadasbh.siu.CreateinstanceRequest();
-            step13Request.setLogLlamadasBHcreateinstancepatrFechaHora(STDFunctions.systemDateTimeFun());
-            step13Request.setLogLlamadasBHcreateinstancepatrUsuario("");
-            step13Request.setLogLlamadasBHcreateinstancepatrCapacidad("");
-            step13Request.setLogLlamadasBHcreateinstancepatrServicio("");
-            step13Request.setLogLlamadasBHcreateinstancepatrSolicitud("");
-            step13Request.setLogLlamadasBHcreateinstancepatrPeticion("");
-            step13Request.setLogLlamadasBHcreateinstancepatrRespuesta("");
-            step13Request.setLogLlamadasBHcreateinstancepatrTipoServicio("");
-            step13Request.setLogLlamadasBHcreateinstancepatrTiempoEjecucion(Utilities.convertToDouble(Long.valueOf(0)));
-            step13Request.setLogLlamadasBHcreateinstancepatrTextoError("");
-            logLlamadasBHSrv.createinstanceImplementation(step13Request);
-            com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRNEWRequest step14Request = new com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRNEWRequest();
-            step14Request.setTGRPTACTRNEWargumentos(tGRPTACTRNEWargumentos);
-            com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRNEWResponse step14Response = globalServicesSrv.tGRPTACTRNEWImplementation(step14Request);
-            response.setTGRPTACTRNEWrespuesta(step14Response.getTGRPTACTRNEWrespuesta());
-        }
-        return response;
+    public ContractResponseResponse tGRPTACTRNEWImplementation(
+    		ContractResponseRequest request) throws ModelException, SystemException {
+    	ContractResponseResponse response = new ContractResponseResponse();
+    	try {
+	    	// Convertimos los datos recibidos a un String Json
+	    	String peticionTxt = "";
+			ObjectMapper mapper= new ObjectMapper();
+			if (request != null) {
+				try {
+					peticionTxt = mapper.writeValueAsString(request);
+				} catch (JsonProcessingException e) {
+		    		org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error(e.getMessage());
+				}
+			}
+	
+	
+			response = procesarNotificacion(request, peticionTxt, false);
+    	} catch (Exception e) {
+			org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error("Respuesta contrato New\n" + e.getMessage());
+    		response.addError("RCN010", "Error procesando peticion");
+    	}
+    	
+    	return response;
+        
     }
+	
+	private ContractResponseResponse procesarNotificacion(ContractResponseRequest request, String peticionTxt,
+				boolean inclusion) {
+
+		ContractResponseResponse response = new ContractResponseResponse();
+		Double tiempoEjecucion = 0.0;
+		Timestamp fechaHora = STDFunctions.systemDateTimeFun();
+		long startTime = System.currentTimeMillis();
+		long endTime;
+		String numSolicitud = "";
+
+		String respuestaTxt = "";
+
+		// Validaciones
+		boolean error = false;
+		if (request == null) {
+			response.addError("E001", "Request vacia");
+			error = true;
+			endTime = System.currentTimeMillis();
+			tiempoEjecucion = (double) ((endTime - startTime) / 1000.0f);
+		} else {
+
+			if (request.getNumeroSolicitud() == null || request.getNumeroSolicitud().isEmpty()) {
+				response.addError("E002", "Numero de solicitud no recibido");
+				error = true;
+				endTime = System.currentTimeMillis();
+				tiempoEjecucion = (double) ((endTime - startTime) / 1000.0f);
+			} else {
+				numSolicitud = request.getNumeroSolicitud();
+			}
+
+			if (request.getResultadoValidacion() == null) {
+				response.addError("E003", "Resultado de la validacion no recibido");
+				error = true;
+				endTime = System.currentTimeMillis();
+				tiempoEjecucion = (double) ((endTime - startTime) / 1000.0f);
+			}
+
+			if (request.getContract() .getCloseRequest() == null) {
+				response.addError("E004", "Campo closeRequest no recibido");
+				error = true;
+				endTime = System.currentTimeMillis();
+				tiempoEjecucion = (double) ((endTime - startTime) / 1000.0f);
+			}
+		}
+		// Si las validaciones han ido bien, proesamos la peticion
+
+		// La buscamos opr numero
+        List<FilterVariableRequest> filterVariables = new ArrayList<>();
+        filterVariables.add(new FilterVariableRequest(SolicitudConstants.VAR_NAME_IFSOLICITUDNUMSOLICITUD_VNUMSOLICITUD, numSolicitud));
+        FilterRequest filterRequest = new FilterRequest(SolicitudConstants.FILTER_NAME_IFSOLICITUDNUMSOLICITUD, filterVariables);
+        QueryRequest queryRequest = new QueryRequest(filterRequest);
+        List<Solicitud> results = solicitudSrv.get(queryRequest);
+        
+        Solicitud solicitud = results != null && !results.isEmpty() ? results.get(0) : null;
+
+		if (solicitud == null || solicitud.isNull()) {
+			response.addError("E010", "Solicitud numero: " + numSolicitud + " no encontrada");
+			return response;
+		}
+
+		
+		String textoErroresPeticion = "";
+		if (!error) {
+			// Ajuste aprobado el 28/07/2026 por correo con asunto: Re: Afiliación Electronica Renovacion: Servicios de Notificación y Respuesta Contrato
+			//   Si la validacion de datos de la solicitud ha sido correcta, no hacemos nada
+			if (request.getResultadoValidacion()) {
+				// Solo tomamos tiempos finales
+				endTime = System.currentTimeMillis();
+				tiempoEjecucion = (double) ((endTime - startTime) / 1000.0f);
+				
+			} else {
+				textoErroresPeticion = request.formarTextoErrores();
+				procesarPeticion(request, response, solicitud);
+				// Tomamos tiempos finales
+				endTime = System.currentTimeMillis();
+				tiempoEjecucion = (double) ((endTime - startTime) / 1000.0f);
+			}
+		}
+
+		// GdC57 tris: En cualqueir caso, guardamos los errores enviados por BH
+		for (String err : request.getListaErrores()) {
+			CrearRequest reqCrear = new CrearRequest();
+			reqCrear.setErrorWScrearpagrSolicitudInstance(solicitud);
+			reqCrear.setErrorWScrearpatrDescripcion(err);
+			ServiceResponse resp = errorWSSrv.crearImplementation(reqCrear);
+			if (!"000".equalsIgnoreCase(resp.getResultCode())) {
+				throw new SystemException(resp.getResultCode() + "\n" + resp.getResultDescription());
+			}
+		}
+		
+		// Guardamos la llamada al WS
+		ObjectMapper mapper= new ObjectMapper();
+		if (request != null) {
+			try {
+				respuestaTxt = mapper.writeValueAsString(response);
+			} catch (JsonProcessingException e) {
+				org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error(e.getMessage());
+			}
+			String capacidad = "registerContractResponse";
+			if (inclusion) {
+				capacidad = "includeBeneficiaryResponse";
+			}
+			
+			guardarLlamadaAE(fechaHora, 
+					capacidad, 
+					"contratoResponse", 
+					numSolicitud, 
+					peticionTxt, 
+					respuestaTxt,
+					"REST Service", 
+					tiempoEjecucion, 
+					textoErroresPeticion + response.formarTextoErrores());
+		}
+
+		return response;
+	}
+
+	
+	private void procesarPeticion(ContractResponseRequest request , ContractResponseResponse response, Solicitud solicitud ) {
+		try {
+			// Comprobamos que se encuentra en estado "Recibido"
+			if (solicitud.getSolicitudEstado() != 8L) {
+				response.addError("E013",
+						"La solicitud numero: " + solicitud.getSolicitudNumRadicado().toString() + " no se encuentra en estado Recibido");
+				return;
+			}
+
+			// Cambiamos estado en funcion de la informacion recibida
+
+			// GdC-37 bis 3: Si ha fallado la validacion, closeRequest = "N" y requiere
+			// examen medico
+			if (!request.getResultadoValidacion() && "N".equals(request.getContract().getCloseRequest())
+					&& request.getRequiereExamenMedico()) {
+				// PENDIENTE MEDICO
+				llamarCambioEstado(solicitud, 5L, null, null);
+			} else {
+				// GdC-37 bis 2
+				if (!request.getResultadoValidacion()) {
+					// Cambiamos la solicitud a estado Error y guardamos los errores
+					llamarCambioEstado(solicitud,  0L, null, null);
+				} else {
+
+					// GdC-37bis2. Determinamos el estado en el que debe quedarse la solicitud
+					if ("S".equalsIgnoreCase(request.getContract().getCloseRequest())) {
+						if (request.getTienePreexistencias()) {
+							// TRAMITADO CON PREEXISTENCIAS
+							llamarCambioEstado(solicitud, 3L, null, null);
+						} else {
+							// TRAMITADO
+							llamarCambioEstado(solicitud, 2L, null, null);
+						}
+					} else {
+						if (request.getRequiereExamenMedico()) {
+							// PENDIENTE MEDICO
+							llamarCambioEstado(solicitud, 5L, null, null);
+						} else {
+							// RADICADO
+							llamarCambioEstado(solicitud, 1L, null, null);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error(e.getMessage());
+			response.addError("E020", e.getMessage());
+		}
+	}
+
+	private void llamarCambioEstado(Solicitud solicitud, Long estado, String observaciones, String motivoDevolucion) throws SystemException {
+		TCAMBIARESTADORequest reqCamEstado = new TCAMBIARESTADORequest();
+		reqCamEstado.setSolicitudTCAMBIARESTADOpthisSolicitudInstance(solicitud);
+		reqCamEstado.setSolicitudTCAMBIARESTADOptpeEstado(estado);
+		reqCamEstado.setSolicitudTCAMBIARESTADOptObservaciones(observaciones);
+		reqCamEstado.setSolicitudTCAMBIARESTADOptMotDevolucion(motivoDevolucion);
+		// Cambiamos el estado de la solicitud a ERROR
+		ServiceResponse resp = solicitudSrv.tCAMBIARESTADOImplementation(reqCamEstado );
+		if (!"000".equalsIgnoreCase(resp.getResultCode())) {
+			String errTxt = resp.getResultCode() + " - " + resp.getResultDescription();
+			throw new SystemException(errTxt);
+		}
+	}
+	
+	private void guardarLlamadaAE(Timestamp p_atrFechaHoraArg, String p_atrCapacidadArg,
+			String p_atrServicioArg, String p_atrSolicitudArg, String p_atrPeticionArg, String p_atrRespuestaArg,
+			String p_atrTipoServicioArg, Double p_atrTiempoEjecucionArg, String p_atrTextoErrorArg) {
+		
+		// Directamente invocamos al servicio que se encarga de registrar la llamada
+		try {
+			CreateinstanceRequest reqCrear = new CreateinstanceRequest();
+			reqCrear.setLogLlamadasAEcreateinstancepatrCapacidad(p_atrCapacidadArg);
+			reqCrear.setLogLlamadasAEcreateinstancepatrDatosEnviados(p_atrPeticionArg);
+			reqCrear.setLogLlamadasAEcreateinstancepatrDatosRecibidos(p_atrRespuestaArg);
+			reqCrear.setLogLlamadasAEcreateinstancepatrFechaHora(p_atrFechaHoraArg);
+			reqCrear.setLogLlamadasAEcreateinstancepatrServicio(p_atrServicioArg);
+			reqCrear.setLogLlamadasAEcreateinstancepatrSolicitud(p_atrSolicitudArg);
+			reqCrear.setLogLlamadasAEcreateinstancepatrTextoError(p_atrTextoErrorArg);
+			reqCrear.setLogLlamadasAEcreateinstancepatrTiempoEjecucion(p_atrTiempoEjecucionArg);
+			reqCrear.setLogLlamadasAEcreateinstancepatrTipoServicio(p_atrTipoServicioArg);
+			logLlamadasAESrv.createinstanceImplementation(reqCrear );
+		} catch (Exception e) {
+			// Si se produce algun error tratando de registrar la llamada lo tiramos al log
+			org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error("E100: Guardando llamada AE" + e.getMessage());
+		}
+	}
 
     /*
      * Entry point for global service TGRPTACTRINC
@@ -1212,13 +1719,13 @@ public class GlobalServicesService extends AbstractService {
      * @return Service response viewmodel with the execution results
      */
     @Transactional(Transactional.TxType.NOT_SUPPORTED)
-    public com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRINCResponse tGRPTACTRINC(
-            com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRINCRequest request) {
-        com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRINCResponse response = new com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRINCResponse();
+    public ContractResponseResponse tGRPTACTRINC(
+    		ContractResponseRequest request) {
+    	ContractResponseResponse response = new ContractResponseResponse();
         try {
             response = globalServicesSrv.tGRPTACTRINCTxn(request);
         } catch (Exception e) {
-            response.setException(e);
+        	response.addError("A0020", e.getMessage());
         }
         return response;
     }
@@ -1229,8 +1736,8 @@ public class GlobalServicesService extends AbstractService {
      * @return Service response viewmodel with the execution results
      */
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRINCResponse tGRPTACTRINCTxn(
-            com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRINCRequest request) throws ModelException, SystemException {
+    public ContractResponseResponse tGRPTACTRINCTxn(
+    		ContractResponseRequest request) throws ModelException, SystemException {
         return globalServicesSrv.tGRPTACTRINCImplementation(request);
     }
 
@@ -1240,46 +1747,29 @@ public class GlobalServicesService extends AbstractService {
      * @return Service response viewmodel with the execution results
      */
     @Transactional(Transactional.TxType.REQUIRED)
-    public com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRINCResponse tGRPTACTRINCImplementation(
-            com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRINCRequest request) throws ModelException, SystemException {
-        com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRINCResponse response = new com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRINCResponse();
-        String tGRPTACTRINCargumentos = request.getTGRPTACTRINCargumentos();
-
-        request.checkArguments();
-
-        /* Action 1: IF (1 > 2) */
-        boolean ifCondition1 = Long.valueOf(1) > Long.valueOf(2);
-        if (ifCondition1) {
-            for(Solicitud step1010Entity : globalServicesRepository.assocOperator156()) {
-                com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TCAMBIARESTADORequest step10Request = new com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TCAMBIARESTADORequest();
-                step10Request.setSolicitudTCAMBIARESTADOpthisSolicitudInstance(step1010Entity);
-                step10Request.setSolicitudTCAMBIARESTADOptpeEstado(Long.valueOf(0));
-                step10Request.setSolicitudTCAMBIARESTADOptObservaciones("");
-                step10Request.setSolicitudTCAMBIARESTADOptMotDevolucion("");
-                solicitudSrv.tCAMBIARESTADOImplementation(step10Request);
-            }
-            for(Solicitud step1011Entity : globalServicesRepository.assocOperator157()) {
-                com.keralty.aegenerasolicitud.viewmodel.errorws.siu.CrearRequest step11Request = new com.keralty.aegenerasolicitud.viewmodel.errorws.siu.CrearRequest();
-                step11Request.setErrorWScrearpagrSolicitudInstance(step1011Entity);
-                step11Request.setErrorWScrearpatrDescripcion("");
-                errorWSSrv.crearImplementation(step11Request);
-            }
-            com.keralty.aegenerasolicitud.viewmodel.logllamadasae.siu.CreateinstanceRequest step12Request = new com.keralty.aegenerasolicitud.viewmodel.logllamadasae.siu.CreateinstanceRequest();
-            step12Request.setLogLlamadasAEcreateinstancepatrFechaHora(STDFunctions.systemDateTimeFun());
-            step12Request.setLogLlamadasAEcreateinstancepatrCapacidad("");
-            step12Request.setLogLlamadasAEcreateinstancepatrServicio("");
-            step12Request.setLogLlamadasAEcreateinstancepatrSolicitud("");
-            step12Request.setLogLlamadasAEcreateinstancepatrDatosRecibidos("");
-            step12Request.setLogLlamadasAEcreateinstancepatrDatosEnviados("");
-            step12Request.setLogLlamadasAEcreateinstancepatrTipoServicio("");
-            step12Request.setLogLlamadasAEcreateinstancepatrTiempoEjecucion(Utilities.convertToDouble(Long.valueOf(0)));
-            step12Request.setLogLlamadasAEcreateinstancepatrTextoError("");
-            logLlamadasAESrv.createinstanceImplementation(step12Request);
-            com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRINCRequest step13Request = new com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRINCRequest();
-            step13Request.setTGRPTACTRINCargumentos(tGRPTACTRINCargumentos);
-            com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGRPTACTRINCResponse step13Response = globalServicesSrv.tGRPTACTRINCImplementation(step13Request);
-            response.setTGRPTACTRINCrespuesta(step13Response.getTGRPTACTRINCrespuesta());
-        }
-        return response;
+    public ContractResponseResponse tGRPTACTRINCImplementation(
+    		ContractResponseRequest request) throws ModelException, SystemException {
+    	ContractResponseResponse response = new ContractResponseResponse();
+        
+    	try {
+	    	// Convertimos los datos recibidos a un String Json
+	    	String peticionTxt = "";
+			ObjectMapper mapper= new ObjectMapper();
+			if (request != null) {
+				try {
+					peticionTxt = mapper.writeValueAsString(request);
+				} catch (JsonProcessingException e) {
+		    		org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error(e.getMessage());
+				}
+			}
+	
+	
+			response = procesarNotificacion(request, peticionTxt, true);
+    	} catch (Exception e) {
+			org.slf4j.LoggerFactory.getLogger(this.getClass().getName()).error("Respuesta contrato Inclusion\n" + e.getMessage());
+    		response.addError("RCN020", "Error procesando peticion");
+    	}
+    	
+    	return response;
     }
 }

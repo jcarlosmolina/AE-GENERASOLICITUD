@@ -110,6 +110,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.LoggerFactory;
 
 @Transactional
@@ -175,6 +176,9 @@ public class SolicitudService extends AbstractService {
     TipoFacturaService tipoFacturaSrv;
 
     UserFunctions userFunctionsSrv;
+
+    @RestClient
+    SolicitudServiceAEEnvioDoc solicitudServiceAEEnvioDoc;
 
     @Inject
     public SolicitudService(
@@ -8163,22 +8167,7 @@ public class SolicitudService extends AbstractService {
     public ServiceResponse tENVIARDOCAUTOAUXImplementation(
             com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TENVIARDOCAUTOAUXRequest request) throws ModelException {
         ServiceResponse response = new ServiceResponse();
-        Solicitud solicitudTENVIARDOCAUTOAUXpthisSolicitud = request.getSolicitudTENVIARDOCAUTOAUXpthisSolicitudInstance();
-
-        request.checkArguments();
-        Solicitud instance = solicitudTENVIARDOCAUTOAUXpthisSolicitud;
-
-        /* Action 1: IF (1 > 2) */
-        boolean ifCondition1 = Long.valueOf(1) > Long.valueOf(2);
-        if (ifCondition1) {
-            com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TENVIARDOCAUTOAUXRequest step10Request = new com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TENVIARDOCAUTOAUXRequest();
-            step10Request.setSolicitudTENVIARDOCAUTOAUXpthisSolicitudInstance(solicitudTENVIARDOCAUTOAUXpthisSolicitud);
-            solicitudSrv.tENVIARDOCAUTOAUXImplementation(step10Request);
-        }
-
-        response.setInstance(getByOID(instance.getOid()));
-        response.setInstanceSuppInfo(instance.buildICSolicitud());
-
+        solicitudServiceAEEnvioDoc.tENVIARDOCAUTOAUX(request);
         return response;
     }
 
