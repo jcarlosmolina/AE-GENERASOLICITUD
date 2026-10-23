@@ -134,13 +134,24 @@ public class ContratoMPRestUtils {
 				osw.flush();
 				osw.close();    		
 
-				InputStream is = conn.getInputStream();
-				InputStreamReader isr = new InputStreamReader(is);
-				BufferedReader br = new BufferedReader(isr);
 				StringBuilder response = new StringBuilder();
 				String output;
-				while ((output = br.readLine()) != null) {
-					response.append(output);
+				InputStreamReader isr = null;
+				BufferedReader br = null;
+				try {
+					InputStream is = conn.getInputStream();
+					isr = new InputStreamReader(is);
+					br = new BufferedReader(isr);
+					while ((output = br.readLine()) != null) {
+						response.append(output);
+					}
+				} finally {
+					if (br != null) {
+						br.close();
+					}
+					if (isr != null) {
+						isr.close();
+					}
 				}
 
 				endTime = System.currentTimeMillis();
