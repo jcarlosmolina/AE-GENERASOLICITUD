@@ -248,86 +248,64 @@ public class GlobalServicesService extends AbstractService {
         } catch (Exception e) { response.setOGENERARSOLICITUD2ptpsErrorWS(e.getMessage()); }
                         globalServicesRepository.refreshEntity(oGENERARSOLICITUD2ptpSolicitudAE);
                 }
-                /* Action 53: IF (EXIST (ptpSolicitudAE.ErroresWS) = false) */
-                boolean ifCondition53 = globalServicesRepository.assocOperator110(oGENERARSOLICITUD2ptpSolicitudAE).equals(false);
+                /* Action 53: IF (EXIST (ptpSolicitudAE.ErroresWS) = false AND ptpSolicitudAE.Tramite = 2 AND ptpSolicitudAE.tipoContrato = 1 AND ptpSolicitudAE.TipoFacturaCORE <> NULL AND EXIST (ptpSolicitudAE.TipoFactura) = true AND ptpSolicitudAE.TipoFacturaCORE <> ptpSolicitudAE.TipoFactura.Codigo) */
+                boolean ifCondition53 = globalServicesRepository.assocOperator107(oGENERARSOLICITUD2ptpSolicitudAE).equals(false) && (oGENERARSOLICITUD2ptpSolicitudAE.getSolicitudTramite()).equals(Long.valueOf(2)) && (oGENERARSOLICITUD2ptpSolicitudAE.getSolicitudtipoContrato()).equals(Long.valueOf(1)) && oGENERARSOLICITUD2ptpSolicitudAE.getSolicitudTipoFacturaCORE() != null && globalServicesRepository.assocOperator108(oGENERARSOLICITUD2ptpSolicitudAE).equals(true) && !STDFunctions.areEqual(oGENERARSOLICITUD2ptpSolicitudAE.getSolicitudTipoFacturaCORE(),oGENERARSOLICITUD2ptpSolicitudAE.getTipoFactura().getTipoFacturaCodigo());
                 if (ifCondition53) {
-                    /* Action 530: IF (EXIST (ptpSolicitudAE.Contratante) = true AND ptpSolicitudAE.Contratante.DireccionesModificadas = true) */
-                    boolean ifCondition530 = globalServicesRepository.assocOperator111(oGENERARSOLICITUD2ptpSolicitudAE).equals(true) && oGENERARSOLICITUD2ptpSolicitudAE.getContratante().getContratanteDireccionesModificadas().equals(true);
-                    if (ifCondition530) {
-                            com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGACTDIRECCIONESRequest step5300Request = new com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGACTDIRECCIONESRequest();
-                            step5300Request.setTGACTDIRECCIONESptSolicitudInstance(oGENERARSOLICITUD2ptpSolicitudAE);
-                            step5300Request.setTGACTDIRECCIONESptTipo(Long.valueOf(1));
-                            globalServicesSrv.tGACTDIRECCIONESTxn(step5300Request);
-                            globalServicesRepository.refreshEntity(oGENERARSOLICITUD2ptpSolicitudAE);
-                    }
-                    /* Action 531: IF (EXIST (ptpSolicitudAE.Titular) = true AND ptpSolicitudAE.Titular.DireccionesModificadas = true) */
-                    boolean ifCondition531 = globalServicesRepository.assocOperator112(oGENERARSOLICITUD2ptpSolicitudAE).equals(true) && oGENERARSOLICITUD2ptpSolicitudAE.getTitular().getTitularDireccionesModificadas().equals(true);
-                    if (ifCondition531) {
-                            com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGACTDIRECCIONESRequest step5310Request = new com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGACTDIRECCIONESRequest();
-                            step5310Request.setTGACTDIRECCIONESptSolicitudInstance(oGENERARSOLICITUD2ptpSolicitudAE);
-                            step5310Request.setTGACTDIRECCIONESptTipo(Long.valueOf(2));
-                            globalServicesSrv.tGACTDIRECCIONESTxn(step5310Request);
-                            globalServicesRepository.refreshEntity(oGENERARSOLICITUD2ptpSolicitudAE);
-                    }
-                }
-                /* Action 54: IF (EXIST (ptpSolicitudAE.ErroresWS) = false AND ptpSolicitudAE.Tramite = 2 AND ptpSolicitudAE.tipoContrato = 1 AND ptpSolicitudAE.TipoFacturaCORE <> NULL AND EXIST (ptpSolicitudAE.TipoFactura) = true AND ptpSolicitudAE.TipoFacturaCORE <> ptpSolicitudAE.TipoFactura.Codigo) */
-                boolean ifCondition54 = globalServicesRepository.assocOperator113(oGENERARSOLICITUD2ptpSolicitudAE).equals(false) && (oGENERARSOLICITUD2ptpSolicitudAE.getSolicitudTramite()).equals(Long.valueOf(2)) && (oGENERARSOLICITUD2ptpSolicitudAE.getSolicitudtipoContrato()).equals(Long.valueOf(1)) && oGENERARSOLICITUD2ptpSolicitudAE.getSolicitudTipoFacturaCORE() != null && globalServicesRepository.assocOperator114(oGENERARSOLICITUD2ptpSolicitudAE).equals(true) && !STDFunctions.areEqual(oGENERARSOLICITUD2ptpSolicitudAE.getSolicitudTipoFacturaCORE(),oGENERARSOLICITUD2ptpSolicitudAE.getTipoFactura().getTipoFacturaCodigo());
-                if (ifCondition54) {
-                        com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGACTTIPOFACTURARequest step540Request = new com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGACTTIPOFACTURARequest();
-                        step540Request.setTGACTTIPOFACTURAptSolicitudInstance(oGENERARSOLICITUD2ptpSolicitudAE);
-                        globalServicesSrv.tGACTTIPOFACTURATxn(step540Request);
+                        com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGACTTIPOFACTURARequest step530Request = new com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGACTTIPOFACTURARequest();
+                        step530Request.setTGACTTIPOFACTURAptSolicitudInstance(oGENERARSOLICITUD2ptpSolicitudAE);
+                        globalServicesSrv.tGACTTIPOFACTURATxn(step530Request);
                         globalServicesRepository.refreshEntity(oGENERARSOLICITUD2ptpSolicitudAE);
                 }
-                /* Action 55: IF (EXIST (ptpSolicitudAE.ErroresWS) = false) */
-                boolean ifCondition55 = globalServicesRepository.assocOperator115(oGENERARSOLICITUD2ptpSolicitudAE).equals(false);
-                if (ifCondition55) {
-                    /* Action 550: IF (ptpSolicitudAE.Tramite = 1) */
-                    boolean ifCondition550 = (oGENERARSOLICITUD2ptpSolicitudAE.getSolicitudTramite()).equals(Long.valueOf(1));
-                    if (ifCondition550) {
-                            com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGCREARCONTRATOCORERequest step5500Request = new com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGCREARCONTRATOCORERequest();
-                            step5500Request.setTGCREARCONTRATOCOREptSolicitudInstance(oGENERARSOLICITUD2ptpSolicitudAE);
-                            com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGCREARCONTRATOCOREResponse step5500Response = globalServicesSrv.tGCREARCONTRATOCORETxn(step5500Request);
-                            response.setOGENERARSOLICITUD2psError(step5500Response.getTGCREARCONTRATOCOREpsError());
+                /* Action 54: IF (EXIST (ptpSolicitudAE.ErroresWS) = false) */
+                boolean ifCondition54 = globalServicesRepository.assocOperator109(oGENERARSOLICITUD2ptpSolicitudAE).equals(false);
+                if (ifCondition54) {
+                    /* Action 540: IF (ptpSolicitudAE.Tramite = 1) */
+                    boolean ifCondition540 = (oGENERARSOLICITUD2ptpSolicitudAE.getSolicitudTramite()).equals(Long.valueOf(1));
+                    if (ifCondition540) {
+                            com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGCREARCONTRATOCORERequest step5400Request = new com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGCREARCONTRATOCORERequest();
+                            step5400Request.setTGCREARCONTRATOCOREptSolicitudInstance(oGENERARSOLICITUD2ptpSolicitudAE);
+                            com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGCREARCONTRATOCOREResponse step5400Response = globalServicesSrv.tGCREARCONTRATOCORETxn(step5400Request);
+                            response.setOGENERARSOLICITUD2psError(step5400Response.getTGCREARCONTRATOCOREpsError());
                             globalServicesRepository.refreshEntity(oGENERARSOLICITUD2ptpSolicitudAE);
                     } else {
-                        /* Action 5501: IF (ptpSolicitudAE.EstadoDoc = 2) */
-                        boolean ifCondition5501 = (oGENERARSOLICITUD2ptpSolicitudAE.getSolicitudEstadoDoc()).equals(Long.valueOf(2));
-                        if (ifCondition5501) {
-                            /* Action 55010: IF (ptpSolicitudAE.NumFamilia = NULL) */
-                            boolean ifCondition55010 = oGENERARSOLICITUD2ptpSolicitudAE.getSolicitudNumFamilia() == null;
-                            if (ifCondition55010) {
-                                    com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGCREARCONTRATOCORERequest step550100Request = new com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGCREARCONTRATOCORERequest();
-                                    step550100Request.setTGCREARCONTRATOCOREptSolicitudInstance(oGENERARSOLICITUD2ptpSolicitudAE);
-                                    com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGCREARCONTRATOCOREResponse step550100Response = globalServicesSrv.tGCREARCONTRATOCORETxn(step550100Request);
-                                    response.setOGENERARSOLICITUD2psError(step550100Response.getTGCREARCONTRATOCOREpsError());
+                        /* Action 5401: IF (ptpSolicitudAE.EstadoDoc = 2) */
+                        boolean ifCondition5401 = (oGENERARSOLICITUD2ptpSolicitudAE.getSolicitudEstadoDoc()).equals(Long.valueOf(2));
+                        if (ifCondition5401) {
+                            /* Action 54010: IF (ptpSolicitudAE.NumFamilia = NULL) */
+                            boolean ifCondition54010 = oGENERARSOLICITUD2ptpSolicitudAE.getSolicitudNumFamilia() == null;
+                            if (ifCondition54010) {
+                                    com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGCREARCONTRATOCORERequest step540100Request = new com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGCREARCONTRATOCORERequest();
+                                    step540100Request.setTGCREARCONTRATOCOREptSolicitudInstance(oGENERARSOLICITUD2ptpSolicitudAE);
+                                    com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGCREARCONTRATOCOREResponse step540100Response = globalServicesSrv.tGCREARCONTRATOCORETxn(step540100Request);
+                                    response.setOGENERARSOLICITUD2psError(step540100Response.getTGCREARCONTRATOCOREpsError());
                                     globalServicesRepository.refreshEntity(oGENERARSOLICITUD2ptpSolicitudAE);
                             } else {
-                                    com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGINCLUSIONCONTRATOCORERequest step550101Request = new com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGINCLUSIONCONTRATOCORERequest();
-                                    step550101Request.setTGINCLUSIONCONTRATOCOREptSolicitudInstance(oGENERARSOLICITUD2ptpSolicitudAE);
-                                    com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGINCLUSIONCONTRATOCOREResponse step550101Response = globalServicesSrv.tGINCLUSIONCONTRATOCORETxn(step550101Request);
-                                    response.setOGENERARSOLICITUD2psError(step550101Response.getTGINCLUSIONCONTRATOCOREpsError());
+                                    com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGINCLUSIONCONTRATOCORERequest step540101Request = new com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGINCLUSIONCONTRATOCORERequest();
+                                    step540101Request.setTGINCLUSIONCONTRATOCOREptSolicitudInstance(oGENERARSOLICITUD2ptpSolicitudAE);
+                                    com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGINCLUSIONCONTRATOCOREResponse step540101Response = globalServicesSrv.tGINCLUSIONCONTRATOCORETxn(step540101Request);
+                                    response.setOGENERARSOLICITUD2psError(step540101Response.getTGINCLUSIONCONTRATOCOREpsError());
                                     globalServicesRepository.refreshEntity(oGENERARSOLICITUD2ptpSolicitudAE);
                             }
                         }
                     }
-                    /* Action 551: IF (psError = false) */
-                    boolean ifCondition551 = response.getOGENERARSOLICITUD2psError().equals(false);
-                    if (ifCondition551) {
-                            com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TPOSTGENERAREXITORequest step5510Request = new com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TPOSTGENERAREXITORequest();
-                            step5510Request.setSolicitudTPOSTGENERAREXITOpthisSolicitudInstance(oGENERARSOLICITUD2ptpSolicitudAE);
-                            solicitudSrv.tPOSTGENERAREXITOTxn(step5510Request);
+                    /* Action 541: IF (psError = false) */
+                    boolean ifCondition541 = response.getOGENERARSOLICITUD2psError().equals(false);
+                    if (ifCondition541) {
+                            com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TPOSTGENERAREXITORequest step5410Request = new com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TPOSTGENERAREXITORequest();
+                            step5410Request.setSolicitudTPOSTGENERAREXITOpthisSolicitudInstance(oGENERARSOLICITUD2ptpSolicitudAE);
+                            solicitudSrv.tPOSTGENERAREXITOTxn(step5410Request);
                             globalServicesRepository.refreshEntity(oGENERARSOLICITUD2ptpSolicitudAE);
                     }
                 } else {
-                        com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.MarcarNoCompletadaRequest step552Request = new com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.MarcarNoCompletadaRequest();
-                        step552Request.setSolicitudmarcarNoCompletadapthisSolicitudInstance(oGENERARSOLICITUD2ptpSolicitudAE);
-                        solicitudSrv.marcarNoCompletadaTxn(step552Request);
+                        com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.MarcarNoCompletadaRequest step542Request = new com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.MarcarNoCompletadaRequest();
+                        step542Request.setSolicitudmarcarNoCompletadapthisSolicitudInstance(oGENERARSOLICITUD2ptpSolicitudAE);
+                        solicitudSrv.marcarNoCompletadaTxn(step542Request);
                         globalServicesRepository.refreshEntity(oGENERARSOLICITUD2ptpSolicitudAE);
                 }
             } else {
-                    com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.MarcarNoCompletadaRequest step56Request = new com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.MarcarNoCompletadaRequest();
-                    step56Request.setSolicitudmarcarNoCompletadapthisSolicitudInstance(oGENERARSOLICITUD2ptpSolicitudAE);
-                    solicitudSrv.marcarNoCompletadaTxn(step56Request);
+                    com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.MarcarNoCompletadaRequest step55Request = new com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.MarcarNoCompletadaRequest();
+                    step55Request.setSolicitudmarcarNoCompletadapthisSolicitudInstance(oGENERARSOLICITUD2ptpSolicitudAE);
+                    solicitudSrv.marcarNoCompletadaTxn(step55Request);
                     globalServicesRepository.refreshEntity(oGENERARSOLICITUD2ptpSolicitudAE);
             }
         } catch (Exception e) { response.setOGENERARSOLICITUD2ptpsErrorWS(e.getMessage()); }
@@ -933,7 +911,7 @@ public class GlobalServicesService extends AbstractService {
             step11Request.setContratoCTPOSTNOTICREARptNombreCompletoTitular("");
             step11Request.setContratoCTPOSTNOTICREARptMunicipioDireccionTitularInstance(null);
             contratoCSrv.tPOSTNOTICREARImplementation(step11Request);
-            for(FamiliaC step1012Entity : globalServicesRepository.assocOperator123()) {
+            for(FamiliaC step1012Entity : globalServicesRepository.assocOperator117()) {
                 com.keralty.aegenerasolicitud.viewmodel.familiac.siu.TCREARACTBENEFRequest step12Request = new com.keralty.aegenerasolicitud.viewmodel.familiac.siu.TCREARACTBENEFRequest();
                 step12Request.setFamiliaCTCREARACTBENEFpthisFamiliaCInstance(step1012Entity);
                 step12Request.setFamiliaCTCREARACTBENEFptpagrEPSCInstance(null);
@@ -956,7 +934,7 @@ public class GlobalServicesService extends AbstractService {
                 step12Request.setFamiliaCTCREARACTBENEFptptCodigoCORE(Long.valueOf(0));
                 familiaCSrv.tCREARACTBENEFImplementation(step12Request);
             }
-            for(PersonaC step1013Entity : globalServicesRepository.assocOperator124()) {
+            for(PersonaC step1013Entity : globalServicesRepository.assocOperator118()) {
                 com.keralty.aegenerasolicitud.viewmodel.preexistenciac.siu.CrearRequest step13Request = new com.keralty.aegenerasolicitud.viewmodel.preexistenciac.siu.CrearRequest();
                 step13Request.setPreexistenciaCcrearpagrPersonaCInstance(step1013Entity);
                 step13Request.setPreexistenciaCcrearpatrDescripcion("");
@@ -965,7 +943,7 @@ public class GlobalServicesService extends AbstractService {
                 step13Request.setPreexistenciaCcrearpatrObservacion("");
                 preexistenciaCSrv.crearImplementation(step13Request);
             }
-            for(BeneficiarioC step1014Entity : globalServicesRepository.assocOperator125()) {
+            for(BeneficiarioC step1014Entity : globalServicesRepository.assocOperator119()) {
                 com.keralty.aegenerasolicitud.viewmodel.conceptoc.siu.CrearRequest step14Request = new com.keralty.aegenerasolicitud.viewmodel.conceptoc.siu.CrearRequest();
                 step14Request.setConceptoCcrearpagrBeneficiarioCInstance(step1014Entity);
                 step14Request.setConceptoCcrearpatrcodConceptoContrato("");
@@ -1057,7 +1035,7 @@ public class GlobalServicesService extends AbstractService {
             step11Request.setContratoCTPOSTNOTICREARptNombreCompletoTitular("");
             step11Request.setContratoCTPOSTNOTICREARptMunicipioDireccionTitularInstance(null);
             contratoCSrv.tPOSTNOTICREARImplementation(step11Request);
-            for(FamiliaC step1012Entity : globalServicesRepository.assocOperator126()) {
+            for(FamiliaC step1012Entity : globalServicesRepository.assocOperator120()) {
                 com.keralty.aegenerasolicitud.viewmodel.familiac.siu.TCREARACTBENEFRequest step12Request = new com.keralty.aegenerasolicitud.viewmodel.familiac.siu.TCREARACTBENEFRequest();
                 step12Request.setFamiliaCTCREARACTBENEFpthisFamiliaCInstance(step1012Entity);
                 step12Request.setFamiliaCTCREARACTBENEFptpagrEPSCInstance(null);
@@ -1080,7 +1058,7 @@ public class GlobalServicesService extends AbstractService {
                 step12Request.setFamiliaCTCREARACTBENEFptptCodigoCORE(Long.valueOf(0));
                 familiaCSrv.tCREARACTBENEFImplementation(step12Request);
             }
-            for(PersonaC step1013Entity : globalServicesRepository.assocOperator127()) {
+            for(PersonaC step1013Entity : globalServicesRepository.assocOperator121()) {
                 com.keralty.aegenerasolicitud.viewmodel.preexistenciac.siu.CrearRequest step13Request = new com.keralty.aegenerasolicitud.viewmodel.preexistenciac.siu.CrearRequest();
                 step13Request.setPreexistenciaCcrearpagrPersonaCInstance(step1013Entity);
                 step13Request.setPreexistenciaCcrearpatrDescripcion("");
@@ -1089,7 +1067,7 @@ public class GlobalServicesService extends AbstractService {
                 step13Request.setPreexistenciaCcrearpatrObservacion("");
                 preexistenciaCSrv.crearImplementation(step13Request);
             }
-            for(BeneficiarioC step1014Entity : globalServicesRepository.assocOperator128()) {
+            for(BeneficiarioC step1014Entity : globalServicesRepository.assocOperator122()) {
                 com.keralty.aegenerasolicitud.viewmodel.conceptoc.siu.CrearRequest step14Request = new com.keralty.aegenerasolicitud.viewmodel.conceptoc.siu.CrearRequest();
                 step14Request.setConceptoCcrearpagrBeneficiarioCInstance(step1014Entity);
                 step14Request.setConceptoCcrearpatrcodConceptoContrato("");
@@ -1339,62 +1317,6 @@ public class GlobalServicesService extends AbstractService {
         	}
         }
         
-        return response;
-    }
-
-    /*
-     * Entry point for global service TGACTDIRECCIONES
-     * @param request Service request viewmodel
-     * @return Service response viewmodel with the execution results
-     */
-    @Transactional(Transactional.TxType.NOT_SUPPORTED)
-    public ServiceResponse tGACTDIRECCIONES(
-            com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGACTDIRECCIONESRequest request) {
-        ServiceResponse response = new ServiceResponse();
-        try {
-            response = globalServicesSrv.tGACTDIRECCIONESTxn(request);
-        } catch (Exception e) {
-            response.setException(e);
-        }
-        return response;
-    }
-
-    /*
-     * Transactional entry point for global service TGACTDIRECCIONES
-     * @param request Service request viewmodel
-     * @return Service response viewmodel with the execution results
-     */
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public ServiceResponse tGACTDIRECCIONESTxn(
-            com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGACTDIRECCIONESRequest request) throws ModelException, SystemException {
-        request.setTGACTDIRECCIONESptSolicitudInstance(solicitudSrv.getByOIDWithHV(request.getTGACTDIRECCIONESptSolicitud()));
-        return globalServicesSrv.tGACTDIRECCIONESImplementation(request);
-    }
-
-    /*
-     * Implements global service TGACTDIRECCIONES
-     * @param request Service request viewmodel
-     * @return Service response viewmodel with the execution results
-     */
-    @Transactional(Transactional.TxType.REQUIRED)
-    public ServiceResponse tGACTDIRECCIONESImplementation(
-            com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGACTDIRECCIONESRequest request) throws ModelException, SystemException {
-        ServiceResponse response = new ServiceResponse();
-        Solicitud tGACTDIRECCIONESptSolicitud = request.getTGACTDIRECCIONESptSolicitudInstance();
-        Long tGACTDIRECCIONESptTipo = request.getTGACTDIRECCIONESptTipo();
-
-        // TODO: Pendiente implementacion
-        String resultado = "";
-        if (tGACTDIRECCIONESptTipo == 1) {
-        	//resultado = PersonaCrearActualizarUtils.actualizarDireccionesPersona(serCtx, ptSolicitud.getContratantePersona(), ptSolicitud.getContratante().getTelefonoFijoRes(), ptSolicitud.getContratante().getTelefonoCelularRes(), ptSolicitud.getContratante().getTelefonoFijo(), ptSolicitud.getContratante().getTelefonoCelular(), ptSolicitud.getAE_SOLICITUDES().getNUMERO_SOLICITUD()); 
-        }
-        if (tGACTDIRECCIONESptTipo == 2) {
-        	//resultado = PersonaCrearActualizarUtils.actualizarDireccionesPersona(serCtx, ptSolicitud.getTitularPersona(), ptSolicitud.getTitular().getTelefonoFijo(), ptSolicitud.getTitular().getTelefonoCelular(), ptSolicitud.getTitular().getTelefonoFijoDC(), ptSolicitud.getTitular().getTelefonoCelularDC(), ptSolicitud.getAE_SOLICITUDES().getNUMERO_SOLICITUD());
-        }
-        
-        if (!resultado.isEmpty()){
-        	guardarErrorWS(tGACTDIRECCIONESptSolicitud, resultado);
-        }
         return response;
     }
 

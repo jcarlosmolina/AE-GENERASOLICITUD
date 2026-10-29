@@ -2,7 +2,6 @@ package com.keralty.aegenerasolicitud.repository;
 
 import com.keralty.aegenerasolicitud.exception.SystemException;
 import com.keralty.aegenerasolicitud.global.BeneficiarioCConstants;
-import com.keralty.aegenerasolicitud.global.ContratanteConstants;
 import com.keralty.aegenerasolicitud.global.ErrorWSConstants;
 import com.keralty.aegenerasolicitud.global.FamiliaCConstants;
 import com.keralty.aegenerasolicitud.global.GlobalServiceConstants;
@@ -10,17 +9,14 @@ import com.keralty.aegenerasolicitud.global.PersonaCConstants;
 import com.keralty.aegenerasolicitud.global.PersonaConstants;
 import com.keralty.aegenerasolicitud.global.SolicitudConstants;
 import com.keralty.aegenerasolicitud.global.TipoFacturaConstants;
-import com.keralty.aegenerasolicitud.global.TitularConstants;
 import com.keralty.aegenerasolicitud.global.UserFunctions;
 import com.keralty.aegenerasolicitud.global.UsuarioConstants;
 import com.keralty.aegenerasolicitud.persistence.BeneficiarioC;
-import com.keralty.aegenerasolicitud.persistence.Contratante;
 import com.keralty.aegenerasolicitud.persistence.ErrorWS;
 import com.keralty.aegenerasolicitud.persistence.FamiliaC;
 import com.keralty.aegenerasolicitud.persistence.PersonaC;
 import com.keralty.aegenerasolicitud.persistence.Solicitud;
 import com.keralty.aegenerasolicitud.persistence.TipoFactura;
-import com.keralty.aegenerasolicitud.persistence.Titular;
 import com.keralty.aegenerasolicitud.persistence.Usuario;
 import com.keralty.aegenerasolicitud.sqlutils.SQLExists;
 import com.keralty.aegenerasolicitud.sqlutils.SQLPopulation;
@@ -152,14 +148,14 @@ public class GlobalServicesJpaRepositoryImpl extends AbstractRepository implemen
             throw new SystemException(e, exceptionMessage);
         }
     }
-    // AssocOperator: AssocOperator110
+    // AssocOperator: AssocOperator107
 	@Override
-    public Boolean assocOperator110(Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException {
+    public Boolean assocOperator107(Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException {
         try {
             // EXIST (ptpSolicitudAE.ErroresWS)
-            return assocOperator110Range1(oGENERARSOLICITUD2ptpSolicitudAE);
+            return assocOperator107Range1(oGENERARSOLICITUD2ptpSolicitudAE);
         } catch (Exception e) {
-            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator110, Method: assocOperator110";
+            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator107, Method: assocOperator107";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
             throw new SystemException(e, exceptionMessage);
         }
@@ -167,13 +163,13 @@ public class GlobalServicesJpaRepositoryImpl extends AbstractRepository implemen
 
 
 
-    public Boolean assocOperator110Range1 (Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException {
-        SQLExists sql = assocOperator110Range1Query(oGENERARSOLICITUD2ptpSolicitudAE, null);
+    public Boolean assocOperator107Range1 (Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException {
+        SQLExists sql = assocOperator107Range1Query(oGENERARSOLICITUD2ptpSolicitudAE, null);
         return !new TypedQueryBuilder<ErrorWS>(em, ErrorWS.class).build(sql).execute().isEmpty();
     }
 
 
-    public SQLExists assocOperator110Range1Query (Solicitud oGENERARSOLICITUD2ptpSolicitudAE, SQLSelect superQuery) throws SystemException {
+    public SQLExists assocOperator107Range1Query (Solicitud oGENERARSOLICITUD2ptpSolicitudAE, SQLSelect superQuery) throws SystemException {
         try {
             SQLExists sql;
             // The path starts with an object
@@ -184,105 +180,19 @@ public class GlobalServicesJpaRepositoryImpl extends AbstractRepository implemen
             }
             return sql;
         } catch (Exception e) {
-            String exceptionMessage = "Assoc.Operator: AssocOperator110, Method: assocOperator110Range1Query";
+            String exceptionMessage = "Assoc.Operator: AssocOperator107, Method: assocOperator107Range1Query";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
             throw new SystemException(e, exceptionMessage);
         }
     }
-    // AssocOperator: AssocOperator111
+    // AssocOperator: AssocOperator108
 	@Override
-    public Boolean assocOperator111(Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException {
-        try {
-            // EXIST (ptpSolicitudAE.Contratante)
-            return assocOperator111Range1(oGENERARSOLICITUD2ptpSolicitudAE);
-        } catch (Exception e) {
-            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator111, Method: assocOperator111";
-            org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
-            throw new SystemException(e, exceptionMessage);
-        }
-    }
-
-
-
-    public Boolean assocOperator111Range1 (Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException {
-        SQLExists sql = assocOperator111Range1Query(oGENERARSOLICITUD2ptpSolicitudAE, null);
-        return !new TypedQueryBuilder<Contratante>(em, Contratante.class).build(sql).execute().isEmpty();
-    }
-
-
-    public SQLExists assocOperator111Range1Query (Solicitud oGENERARSOLICITUD2ptpSolicitudAE, SQLSelect superQuery) throws SystemException {
-        try {
-            SQLExists sql;
-            // The path starts with an object
-            if (superQuery != null) {
-                sql = new SQLExists(superQuery, "", GlobalServiceConstants.GS_ARG_NAME_OGENERARSOLICITUD2_OGENERARSOLICITUD2PTPSOLICITUDAE + "." + ContratanteConstants.CLASS_NAME, SolicitudConstants.CLASS_NAME, oGENERARSOLICITUD2ptpSolicitudAE.getOid(), GlobalServiceConstants.GS_ARG_NAME_OGENERARSOLICITUD2_OGENERARSOLICITUD2PTPSOLICITUDAE);
-            } else {
-                sql = new SQLExists("", GlobalServiceConstants.GS_ARG_NAME_OGENERARSOLICITUD2_OGENERARSOLICITUD2PTPSOLICITUDAE + "." + ContratanteConstants.CLASS_NAME, SolicitudConstants.CLASS_NAME, oGENERARSOLICITUD2ptpSolicitudAE.getOid(), GlobalServiceConstants.GS_ARG_NAME_OGENERARSOLICITUD2_OGENERARSOLICITUD2PTPSOLICITUDAE);
-            }
-            return sql;
-        } catch (Exception e) {
-            String exceptionMessage = "Assoc.Operator: AssocOperator111, Method: assocOperator111Range1Query";
-            org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
-            throw new SystemException(e, exceptionMessage);
-        }
-    }
-    // AssocOperator: AssocOperator112
-	@Override
-    public Boolean assocOperator112(Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException {
-        try {
-            // EXIST (ptpSolicitudAE.Titular)
-            return assocOperator112Range1(oGENERARSOLICITUD2ptpSolicitudAE);
-        } catch (Exception e) {
-            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator112, Method: assocOperator112";
-            org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
-            throw new SystemException(e, exceptionMessage);
-        }
-    }
-
-
-
-    public Boolean assocOperator112Range1 (Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException {
-        SQLExists sql = assocOperator112Range1Query(oGENERARSOLICITUD2ptpSolicitudAE, null);
-        return !new TypedQueryBuilder<Titular>(em, Titular.class).build(sql).execute().isEmpty();
-    }
-
-
-    public SQLExists assocOperator112Range1Query (Solicitud oGENERARSOLICITUD2ptpSolicitudAE, SQLSelect superQuery) throws SystemException {
-        try {
-            SQLExists sql;
-            // The path starts with an object
-            if (superQuery != null) {
-                sql = new SQLExists(superQuery, "", GlobalServiceConstants.GS_ARG_NAME_OGENERARSOLICITUD2_OGENERARSOLICITUD2PTPSOLICITUDAE + "." + TitularConstants.CLASS_NAME, SolicitudConstants.CLASS_NAME, oGENERARSOLICITUD2ptpSolicitudAE.getOid(), GlobalServiceConstants.GS_ARG_NAME_OGENERARSOLICITUD2_OGENERARSOLICITUD2PTPSOLICITUDAE);
-            } else {
-                sql = new SQLExists("", GlobalServiceConstants.GS_ARG_NAME_OGENERARSOLICITUD2_OGENERARSOLICITUD2PTPSOLICITUDAE + "." + TitularConstants.CLASS_NAME, SolicitudConstants.CLASS_NAME, oGENERARSOLICITUD2ptpSolicitudAE.getOid(), GlobalServiceConstants.GS_ARG_NAME_OGENERARSOLICITUD2_OGENERARSOLICITUD2PTPSOLICITUDAE);
-            }
-            return sql;
-        } catch (Exception e) {
-            String exceptionMessage = "Assoc.Operator: AssocOperator112, Method: assocOperator112Range1Query";
-            org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
-            throw new SystemException(e, exceptionMessage);
-        }
-    }
-    // AssocOperator: AssocOperator113
-	@Override
-    public Boolean assocOperator113(Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException {
-        try {
-            // EXIST (ptpSolicitudAE.ErroresWS)
-            return assocOperator110(oGENERARSOLICITUD2ptpSolicitudAE);
-        } catch (Exception e) {
-            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator113, Method: assocOperator113";
-            org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
-            throw new SystemException(e, exceptionMessage);
-        }
-    }
-    // AssocOperator: AssocOperator114
-	@Override
-    public Boolean assocOperator114(Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException {
+    public Boolean assocOperator108(Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException {
         try {
             // EXIST (ptpSolicitudAE.TipoFactura)
-            return assocOperator114Range1(oGENERARSOLICITUD2ptpSolicitudAE);
+            return assocOperator108Range1(oGENERARSOLICITUD2ptpSolicitudAE);
         } catch (Exception e) {
-            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator114, Method: assocOperator114";
+            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator108, Method: assocOperator108";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
             throw new SystemException(e, exceptionMessage);
         }
@@ -290,13 +200,13 @@ public class GlobalServicesJpaRepositoryImpl extends AbstractRepository implemen
 
 
 
-    public Boolean assocOperator114Range1 (Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException {
-        SQLExists sql = assocOperator114Range1Query(oGENERARSOLICITUD2ptpSolicitudAE, null);
+    public Boolean assocOperator108Range1 (Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException {
+        SQLExists sql = assocOperator108Range1Query(oGENERARSOLICITUD2ptpSolicitudAE, null);
         return !new TypedQueryBuilder<TipoFactura>(em, TipoFactura.class).build(sql).execute().isEmpty();
     }
 
 
-    public SQLExists assocOperator114Range1Query (Solicitud oGENERARSOLICITUD2ptpSolicitudAE, SQLSelect superQuery) throws SystemException {
+    public SQLExists assocOperator108Range1Query (Solicitud oGENERARSOLICITUD2ptpSolicitudAE, SQLSelect superQuery) throws SystemException {
         try {
             SQLExists sql;
             // The path starts with an object
@@ -307,32 +217,32 @@ public class GlobalServicesJpaRepositoryImpl extends AbstractRepository implemen
             }
             return sql;
         } catch (Exception e) {
-            String exceptionMessage = "Assoc.Operator: AssocOperator114, Method: assocOperator114Range1Query";
+            String exceptionMessage = "Assoc.Operator: AssocOperator108, Method: assocOperator108Range1Query";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
             throw new SystemException(e, exceptionMessage);
         }
     }
-    // AssocOperator: AssocOperator115
+    // AssocOperator: AssocOperator109
 	@Override
-    public Boolean assocOperator115(Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException {
+    public Boolean assocOperator109(Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException {
         try {
             // EXIST (ptpSolicitudAE.ErroresWS)
-            return assocOperator110(oGENERARSOLICITUD2ptpSolicitudAE);
+            return assocOperator107(oGENERARSOLICITUD2ptpSolicitudAE);
         } catch (Exception e) {
-            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator115, Method: assocOperator115";
+            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator109, Method: assocOperator109";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
             throw new SystemException(e, exceptionMessage);
         }
     }
 
-    // AssocOperator: AssocOperator123
+    // AssocOperator: AssocOperator117
 	@Override
-    public Collection<FamiliaC> assocOperator123() throws SystemException {
+    public Collection<FamiliaC> assocOperator117() throws SystemException {
         try {
             // FOR ALL FamiliaC DO FamiliaC.TCREARACTBENEF(FamiliaC, NULL, NULL, fugetParentescoTitular(), NULL, "0", false, NULL, NULL, NULL, NULL, false, NULL, systemDate(), 0, fugetTipoIdentificacion("0"), "", "", 0)
-            return assocOperator123Range1();
+            return assocOperator117Range1();
         } catch (Exception e) {
-            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator123, Method: assocOperator123";
+            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator117, Method: assocOperator117";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
             throw new SystemException(e, exceptionMessage);
         }
@@ -340,30 +250,30 @@ public class GlobalServicesJpaRepositoryImpl extends AbstractRepository implemen
 
 
 
-    public Collection<FamiliaC> assocOperator123Range1 () throws SystemException {
+    public Collection<FamiliaC> assocOperator117Range1 () throws SystemException {
 
-        SQLSelect sql = assocOperator123Range1Query();
+        SQLSelect sql = assocOperator117Range1Query();
         return new TypedQueryBuilder<FamiliaC>(em, FamiliaC.class).build(sql).execute();
     }
 
 
-    public SQLPopulation assocOperator123Range1Query () throws SystemException {
+    public SQLPopulation assocOperator117Range1Query () throws SystemException {
         try {
             return new SQLPopulation("", FamiliaCConstants.CLASS_NAME);
         } catch (Exception e) {
-            String exceptionMessage = "Assoc.Operator: AssocOperator123, Method: assocOperator123Range1Query";
+            String exceptionMessage = "Assoc.Operator: AssocOperator117, Method: assocOperator117Range1Query";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
             throw new SystemException(e, exceptionMessage);
         }
     }
-    // AssocOperator: AssocOperator124
+    // AssocOperator: AssocOperator118
 	@Override
-    public Collection<PersonaC> assocOperator124() throws SystemException {
+    public Collection<PersonaC> assocOperator118() throws SystemException {
         try {
             // FOR ALL PersonaC DO PreexistenciaC.crear(PersonaC, "", systemDate(), systemDate(), "")
-            return assocOperator124Range1();
+            return assocOperator118Range1();
         } catch (Exception e) {
-            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator124, Method: assocOperator124";
+            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator118, Method: assocOperator118";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
             throw new SystemException(e, exceptionMessage);
         }
@@ -371,30 +281,30 @@ public class GlobalServicesJpaRepositoryImpl extends AbstractRepository implemen
 
 
 
-    public Collection<PersonaC> assocOperator124Range1 () throws SystemException {
+    public Collection<PersonaC> assocOperator118Range1 () throws SystemException {
 
-        SQLSelect sql = assocOperator124Range1Query();
+        SQLSelect sql = assocOperator118Range1Query();
         return new TypedQueryBuilder<PersonaC>(em, PersonaC.class).build(sql).execute();
     }
 
 
-    public SQLPopulation assocOperator124Range1Query () throws SystemException {
+    public SQLPopulation assocOperator118Range1Query () throws SystemException {
         try {
             return new SQLPopulation("", PersonaCConstants.CLASS_NAME);
         } catch (Exception e) {
-            String exceptionMessage = "Assoc.Operator: AssocOperator124, Method: assocOperator124Range1Query";
+            String exceptionMessage = "Assoc.Operator: AssocOperator118, Method: assocOperator118Range1Query";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
             throw new SystemException(e, exceptionMessage);
         }
     }
-    // AssocOperator: AssocOperator125
+    // AssocOperator: AssocOperator119
 	@Override
-    public Collection<BeneficiarioC> assocOperator125() throws SystemException {
+    public Collection<BeneficiarioC> assocOperator119() throws SystemException {
         try {
             // FOR ALL BeneficiarioC DO ConceptoC.crear(BeneficiarioC, "", "", 0, 0)
-            return assocOperator125Range1();
+            return assocOperator119Range1();
         } catch (Exception e) {
-            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator125, Method: assocOperator125";
+            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator119, Method: assocOperator119";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
             throw new SystemException(e, exceptionMessage);
         }
@@ -402,68 +312,68 @@ public class GlobalServicesJpaRepositoryImpl extends AbstractRepository implemen
 
 
 
-    public Collection<BeneficiarioC> assocOperator125Range1 () throws SystemException {
+    public Collection<BeneficiarioC> assocOperator119Range1 () throws SystemException {
 
-        SQLSelect sql = assocOperator125Range1Query();
+        SQLSelect sql = assocOperator119Range1Query();
         return new TypedQueryBuilder<BeneficiarioC>(em, BeneficiarioC.class).build(sql).execute();
     }
 
 
-    public SQLPopulation assocOperator125Range1Query () throws SystemException {
+    public SQLPopulation assocOperator119Range1Query () throws SystemException {
         try {
             return new SQLPopulation("", BeneficiarioCConstants.CLASS_NAME);
         } catch (Exception e) {
-            String exceptionMessage = "Assoc.Operator: AssocOperator125, Method: assocOperator125Range1Query";
+            String exceptionMessage = "Assoc.Operator: AssocOperator119, Method: assocOperator119Range1Query";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
             throw new SystemException(e, exceptionMessage);
         }
     }
 
-    // AssocOperator: AssocOperator126
+    // AssocOperator: AssocOperator120
 	@Override
-    public Collection<FamiliaC> assocOperator126() throws SystemException {
+    public Collection<FamiliaC> assocOperator120() throws SystemException {
         try {
             // FOR ALL FamiliaC DO FamiliaC.TCREARACTBENEF(FamiliaC, NULL, NULL, fugetParentescoTitular(), NULL, "0", false, NULL, NULL, NULL, NULL, false, NULL, systemDate(), 0, fugetTipoIdentificacion("0"), "", "", 0)
-            return assocOperator123();
+            return assocOperator117();
         } catch (Exception e) {
-            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator126, Method: assocOperator126";
+            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator120, Method: assocOperator120";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
             throw new SystemException(e, exceptionMessage);
         }
     }
-    // AssocOperator: AssocOperator127
+    // AssocOperator: AssocOperator121
 	@Override
-    public Collection<PersonaC> assocOperator127() throws SystemException {
+    public Collection<PersonaC> assocOperator121() throws SystemException {
         try {
             // FOR ALL PersonaC DO PreexistenciaC.crear(PersonaC, "", systemDate(), systemDate(), "")
-            return assocOperator124();
+            return assocOperator118();
         } catch (Exception e) {
-            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator127, Method: assocOperator127";
+            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator121, Method: assocOperator121";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
             throw new SystemException(e, exceptionMessage);
         }
     }
-    // AssocOperator: AssocOperator128
+    // AssocOperator: AssocOperator122
 	@Override
-    public Collection<BeneficiarioC> assocOperator128() throws SystemException {
+    public Collection<BeneficiarioC> assocOperator122() throws SystemException {
         try {
             // FOR ALL BeneficiarioC DO ConceptoC.crear(BeneficiarioC, "", "", 0, 0)
-            return assocOperator125();
+            return assocOperator119();
         } catch (Exception e) {
-            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator128, Method: assocOperator128";
+            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator122, Method: assocOperator122";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
             throw new SystemException(e, exceptionMessage);
         }
     }
 
-    // AssocOperator: AssocOperator154
+    // AssocOperator: AssocOperator148
 	@Override
-    public Collection<Solicitud> assocOperator154() throws SystemException {
+    public Collection<Solicitud> assocOperator148() throws SystemException {
         try {
             // FOR ALL Solicitud DO Solicitud.TCAMBIARESTADO(Solicitud, 0, "", "")
-            return assocOperator154Range1();
+            return assocOperator148Range1();
         } catch (Exception e) {
-            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator154, Method: assocOperator154";
+            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator148, Method: assocOperator148";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
             throw new SystemException(e, exceptionMessage);
         }
@@ -471,55 +381,55 @@ public class GlobalServicesJpaRepositoryImpl extends AbstractRepository implemen
 
 
 
-    public Collection<Solicitud> assocOperator154Range1 () throws SystemException {
+    public Collection<Solicitud> assocOperator148Range1 () throws SystemException {
 
-        SQLSelect sql = assocOperator154Range1Query();
+        SQLSelect sql = assocOperator148Range1Query();
         return new TypedQueryBuilder<Solicitud>(em, Solicitud.class).build(sql).execute();
     }
 
 
-    public SQLPopulation assocOperator154Range1Query () throws SystemException {
+    public SQLPopulation assocOperator148Range1Query () throws SystemException {
         try {
             return new SQLPopulation("", SolicitudConstants.CLASS_NAME);
         } catch (Exception e) {
-            String exceptionMessage = "Assoc.Operator: AssocOperator154, Method: assocOperator154Range1Query";
+            String exceptionMessage = "Assoc.Operator: AssocOperator148, Method: assocOperator148Range1Query";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
             throw new SystemException(e, exceptionMessage);
         }
     }
-    // AssocOperator: AssocOperator155
+    // AssocOperator: AssocOperator149
 	@Override
-    public Collection<Solicitud> assocOperator155() throws SystemException {
+    public Collection<Solicitud> assocOperator149() throws SystemException {
         try {
             // FOR ALL Solicitud DO ErrorWS.crear(Solicitud, "")
-            return assocOperator154();
+            return assocOperator148();
         } catch (Exception e) {
-            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator155, Method: assocOperator155";
+            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator149, Method: assocOperator149";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
             throw new SystemException(e, exceptionMessage);
         }
     }
 
-    // AssocOperator: AssocOperator156
+    // AssocOperator: AssocOperator150
 	@Override
-    public Collection<Solicitud> assocOperator156() throws SystemException {
+    public Collection<Solicitud> assocOperator150() throws SystemException {
         try {
             // FOR ALL Solicitud DO Solicitud.TCAMBIARESTADO(Solicitud, 0, "", "")
-            return assocOperator154();
+            return assocOperator148();
         } catch (Exception e) {
-            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator156, Method: assocOperator156";
+            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator150, Method: assocOperator150";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
             throw new SystemException(e, exceptionMessage);
         }
     }
-    // AssocOperator: AssocOperator157
+    // AssocOperator: AssocOperator151
 	@Override
-    public Collection<Solicitud> assocOperator157() throws SystemException {
+    public Collection<Solicitud> assocOperator151() throws SystemException {
         try {
             // FOR ALL Solicitud DO ErrorWS.crear(Solicitud, "")
-            return assocOperator154();
+            return assocOperator148();
         } catch (Exception e) {
-            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator157, Method: assocOperator157";
+            String exceptionMessage = "Definition Class: GLOBAL, Assoc.Operator: AssocOperator151, Method: assocOperator151";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
             throw new SystemException(e, exceptionMessage);
         }

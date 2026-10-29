@@ -17,37 +17,31 @@ public interface GlobalServicesJpaRepository {
 
     Collection<Usuario> assocOperator103(Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException;
 
-    Boolean assocOperator110(Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException;
+    Boolean assocOperator107(Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException;
 
-    Boolean assocOperator111(Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException;
+    Boolean assocOperator108(Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException;
 
-    Boolean assocOperator112(Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException;
+    Boolean assocOperator109(Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException;
 
-    Boolean assocOperator113(Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException;
+    Collection<FamiliaC> assocOperator117() throws SystemException;
 
-    Boolean assocOperator114(Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException;
+    Collection<PersonaC> assocOperator118() throws SystemException;
 
-    Boolean assocOperator115(Solicitud oGENERARSOLICITUD2ptpSolicitudAE) throws SystemException;
+    Collection<BeneficiarioC> assocOperator119() throws SystemException;
 
-    Collection<FamiliaC> assocOperator123() throws SystemException;
+    Collection<FamiliaC> assocOperator120() throws SystemException;
 
-    Collection<PersonaC> assocOperator124() throws SystemException;
+    Collection<PersonaC> assocOperator121() throws SystemException;
 
-    Collection<BeneficiarioC> assocOperator125() throws SystemException;
+    Collection<BeneficiarioC> assocOperator122() throws SystemException;
 
-    Collection<FamiliaC> assocOperator126() throws SystemException;
+    Collection<Solicitud> assocOperator148() throws SystemException;
 
-    Collection<PersonaC> assocOperator127() throws SystemException;
+    Collection<Solicitud> assocOperator149() throws SystemException;
 
-    Collection<BeneficiarioC> assocOperator128() throws SystemException;
+    Collection<Solicitud> assocOperator150() throws SystemException;
 
-    Collection<Solicitud> assocOperator154() throws SystemException;
-
-    Collection<Solicitud> assocOperator155() throws SystemException;
-
-    Collection<Solicitud> assocOperator156() throws SystemException;
-
-    Collection<Solicitud> assocOperator157() throws SystemException;
+    Collection<Solicitud> assocOperator151() throws SystemException;
 
     void refreshEntity(Object object);
 }

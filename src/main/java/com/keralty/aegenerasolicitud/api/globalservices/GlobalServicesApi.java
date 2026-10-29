@@ -4,7 +4,6 @@ import com.keralty.aegenerasolicitud.service.GlobalServicesService;
 import com.keralty.aegenerasolicitud.utils.TokenUtilities;
 import com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.OGENERARSOLICITUD2Request;
 import com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.OGENERARSOLICITUD2Response;
-import com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGACTDIRECCIONESRequest;
 import com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGACTPERSONAENCORERequest;
 import com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGACTPERSONAENCOREResponse;
 import com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGACTTIPOFACTURARequest;
@@ -107,13 +106,6 @@ public class GlobalServicesApi {
     @RolesAllowed({"Admin","SuperAdmin","Asesor","AreaMedica","Afiliaciones"})
     public TGCREARACTPERSONACOREResponse tGCREARACTPERSONACORE(TGCREARACTPERSONACORERequest request) {
         return service.tGCREARACTPERSONACORE(request);
-    }
-
-    @POST
-    @Path(value = "/TGACTDIRECCIONES")
-    @RolesAllowed({"Funcionario","Admin","SuperAdmin","Asesor","AreaMedica","Afiliaciones","RespRegional","Gestor","MesaDeApoyo"})
-    public ServiceResponse tGACTDIRECCIONES(TGACTDIRECCIONESRequest request) {
-        return service.tGACTDIRECCIONES(request);
     }
 
     @POST
