@@ -1314,8 +1314,8 @@ public class PersonaCJpaRepositoryImpl extends AbstractRepository implements Per
 	@Override
     public Collection<Preexistencia> assocOperator040(PersonaC personaCTCOPIARPREEXDEUSUpthisPersonaC, Usuario personaCTCOPIARPREEXDEUSUpUsuario) throws SystemException {
         try {
-        	if (personaCTCOPIARPREEXDEUSUpUsuario == null) {
-        		throw new IllegalArgumentException("personaCTCOPIARPREEXDEUSUpUsuario cannot be null");
+        	if (personaCTCOPIARPREEXDEUSUpthisPersonaC == null) {
+        		throw new IllegalArgumentException("personaCTCOPIARPREEXDEUSUpthisPersonaC cannot be null");
         	}
             // FOR ALL pUsuario.Preexistencias DO PreexistenciasC.crear(this, pUsuario.Preexistencias.Descripcion, pUsuario.Preexistencias.FecInicio, pUsuario.Preexistencias.FecFin, pUsuario.Preexistencias.Observacion)
         return assocOperator040Range1(personaCTCOPIARPREEXDEUSUpUsuario);
