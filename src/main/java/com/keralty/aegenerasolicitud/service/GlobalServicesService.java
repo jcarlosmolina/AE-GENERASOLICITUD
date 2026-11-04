@@ -883,6 +883,9 @@ public class GlobalServicesService extends AbstractService {
             com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGNOTIFICARCREARRequest request) throws ModelException, SystemException {
         ServiceResponse response = new ServiceResponse();
 
+        if (request == null) {
+            throw new IllegalArgumentException("Invalid request to tGNOTIFICARCREARImplementation");
+        }
         return response;
     }
 
@@ -924,6 +927,9 @@ public class GlobalServicesService extends AbstractService {
             com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGNOTIFICARINCLUSIONRequest request) throws ModelException, SystemException {
         ServiceResponse response = new ServiceResponse();
 
+        if (request == null) {
+            throw new IllegalArgumentException("Invalid request to tGNOTIFICARINCLUSIONImplementation");
+        }
         return response;
     }
 
@@ -965,6 +971,9 @@ public class GlobalServicesService extends AbstractService {
             com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGNOTIFICARANULARRequest request) throws ModelException, SystemException {
         ServiceResponse response = new ServiceResponse();
 
+        if (request == null) {
+            throw new IllegalArgumentException("Invalid request to tGNOTIFICARANULARImplementation");
+        }
         return response;
     }
 
