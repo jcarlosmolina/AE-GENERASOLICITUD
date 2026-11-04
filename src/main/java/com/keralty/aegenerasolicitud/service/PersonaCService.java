@@ -950,7 +950,7 @@ public class PersonaCService extends AbstractService {
             }
         }
 
-        for(PreguntaP step2Entity : repository.assocOperator014(personaCTCREAROCUESDEAEpthisPersonaC, personaCTCREAROCUESDEAEpCuestionarioP)) {
+        for(PreguntaP step2Entity : repository.assocOperator014(personaCTCREAROCUESDEAEpCuestionarioP)) {
             com.keralty.aegenerasolicitud.viewmodel.pregcuesmedc.siu.CrearRequest step2Request = new com.keralty.aegenerasolicitud.viewmodel.pregcuesmedc.siu.CrearRequest();
             step2Request.setPregCuesMedCcrearpagrPersonaCInstance(personaCTCREAROCUESDEAEpthisPersonaC);
             step2Request.setPregCuesMedCcrearpatrCodPregunta(step2Entity.getPreguntaPNumero());
@@ -1644,7 +1644,7 @@ public class PersonaCService extends AbstractService {
         request.checkArguments();
         PersonaC instance = personaCTCOPIARPREEXDEUSUpthisPersonaC;
 
-        for(Preexistencia step1Entity : repository.assocOperator040(personaCTCOPIARPREEXDEUSUpthisPersonaC, personaCTCOPIARPREEXDEUSUpUsuario)) {
+        for(Preexistencia step1Entity : repository.assocOperator040(personaCTCOPIARPREEXDEUSUpUsuario)) {
             com.keralty.aegenerasolicitud.viewmodel.preexistenciac.siu.CrearRequest step1Request = new com.keralty.aegenerasolicitud.viewmodel.preexistenciac.siu.CrearRequest();
             step1Request.setPreexistenciaCcrearpagrPersonaCInstance(personaCTCOPIARPREEXDEUSUpthisPersonaC);
             step1Request.setPreexistenciaCcrearpatrDescripcion(step1Entity.getPreexistenciaDescripcion());

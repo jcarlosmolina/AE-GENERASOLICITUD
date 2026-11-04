@@ -105,7 +105,7 @@ public interface PersonaCJpaRepositoryCustom {
     
     SQLPopulation assocOperator013Range1Query(PersonaC instance) throws SystemException;
 
-    Collection<PreguntaP> assocOperator014(PersonaC personaCTCREAROCUESDEAEpthisPersonaC, CuestionarioP personaCTCREAROCUESDEAEpCuestionarioP) throws SystemException;
+    Collection<PreguntaP> assocOperator014(CuestionarioP personaCTCREAROCUESDEAEpCuestionarioP) throws SystemException;
 
     Collection<PreguntaP> assocOperator014Range1(CuestionarioP personaCTCREAROCUESDEAEpCuestionarioP) throws SystemException;
     
@@ -199,7 +199,7 @@ public interface PersonaCJpaRepositoryCustom {
     
     SQLExists assocOperator039Range1Query(Usuario personaCTNEWBENEFDESDEAEptUsuario, SQLSelect superQuery) throws SystemException;
 
-    Collection<Preexistencia> assocOperator040(PersonaC personaCTCOPIARPREEXDEUSUpthisPersonaC, Usuario personaCTCOPIARPREEXDEUSUpUsuario) throws SystemException;
+    Collection<Preexistencia> assocOperator040(Usuario personaCTCOPIARPREEXDEUSUpUsuario) throws SystemException;
 
     Collection<Preexistencia> assocOperator040Range1(Usuario personaCTCOPIARPREEXDEUSUpUsuario) throws SystemException;
     

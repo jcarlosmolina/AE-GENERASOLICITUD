@@ -208,12 +208,11 @@ public class FamiliaNovedadJpaRepositoryImpl extends AbstractRepository implemen
     public SQLExists assocOperator003Range1Query (FamiliaNovedad instance, SQLSelect superQuery) throws SystemException {
         try {
             // Path starts with a class in the subquery
-        	if (superQuery == null)
-        	{
-        		return new SQLExists(FamiliaNovedadConstants.CLASS_NAME, FamiliaNovedadConstants.ROLE_NAME_USUARIONOVEDAD + "." + UsuarioNovedadConstants.ROLE_NAME_TIPOIDENTIFICACIONCD, instance.getOid());
-        	} else {
+            if(superQuery == null) {
+                return new SQLExists(FamiliaNovedadConstants.CLASS_NAME, FamiliaNovedadConstants.ROLE_NAME_USUARIONOVEDAD + "." + UsuarioNovedadConstants.ROLE_NAME_TIPOIDENTIFICACIONCD, instance.getOid());
+            } else {
                 return new SQLExists(superQuery, FamiliaNovedadConstants.CLASS_NAME, FamiliaNovedadConstants.ROLE_NAME_USUARIONOVEDAD + "." + UsuarioNovedadConstants.ROLE_NAME_TIPOIDENTIFICACIONCD);
-        	}
+            }
         } catch (Exception e) {
             String exceptionMessage = "Definition Class: FamiliaNovedad, Assoc.Operator: AssocOperator003, Method: assocOperator003Range1Query";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
@@ -246,8 +245,8 @@ public class FamiliaNovedadJpaRepositoryImpl extends AbstractRepository implemen
     public SQLExists assocOperator004Range1Query (FamiliaNovedad instance, SQLSelect superQuery) throws SystemException {
         try {
             // Path starts with a class in the subquery
-            if (superQuery == null) {
-            	return new SQLExists(FamiliaNovedadConstants.CLASS_NAME, FamiliaNovedadConstants.ROLE_NAME_USUARIONOVEDAD + "." + UsuarioNovedadConstants.ROLE_NAME_TIPOIDENTIFICACIONCD, instance.getOid());
+            if(superQuery == null) {
+                return new SQLExists(FamiliaNovedadConstants.CLASS_NAME, FamiliaNovedadConstants.ROLE_NAME_USUARIONOVEDAD + "." + UsuarioNovedadConstants.ROLE_NAME_TIPOIDENTIFICACIONCD, instance.getOid());
             } else {
                 return new SQLExists(superQuery, FamiliaNovedadConstants.CLASS_NAME, FamiliaNovedadConstants.ROLE_NAME_USUARIONOVEDAD + "." + UsuarioNovedadConstants.ROLE_NAME_TIPOIDENTIFICACIONCD);
             }
@@ -322,11 +321,11 @@ public class FamiliaNovedadJpaRepositoryImpl extends AbstractRepository implemen
     public SQLExists assocOperator006Range1Query (FamiliaNovedad instance, SQLSelect superQuery) throws SystemException {
         try {
             // Path starts with a class in the subquery
-            if (superQuery == null) {
-            	return new SQLExists(FamiliaNovedadConstants.CLASS_NAME, FamiliaNovedadConstants.ROLE_NAME_USUARIONOVEDAD + "." + UsuarioNovedadConstants.ROLE_NAME_TIPOIDENTIFICACIONCD, instance.getOid());
+            if(superQuery == null) {
+                return new SQLExists(FamiliaNovedadConstants.CLASS_NAME, FamiliaNovedadConstants.ROLE_NAME_USUARIONOVEDAD + "." + UsuarioNovedadConstants.ROLE_NAME_TIPOIDENTIFICACIONCD, instance.getOid());
             } else {
                 return new SQLExists(superQuery, FamiliaNovedadConstants.CLASS_NAME, FamiliaNovedadConstants.ROLE_NAME_USUARIONOVEDAD + "." + UsuarioNovedadConstants.ROLE_NAME_TIPOIDENTIFICACIONCD);
-            } 
+            }
         } catch (Exception e) {
             String exceptionMessage = "Definition Class: FamiliaNovedad, Assoc.Operator: AssocOperator006, Method: assocOperator006Range1Query";
             org.slf4j.LoggerFactory.getLogger(this.getClass()).error(exceptionMessage);
@@ -359,8 +358,8 @@ public class FamiliaNovedadJpaRepositoryImpl extends AbstractRepository implemen
     public SQLExists assocOperator007Range1Query (FamiliaNovedad instance, SQLSelect superQuery) throws SystemException {
         try {
             // Path starts with a class in the subquery
-            if (superQuery == null) {
-            	return new SQLExists(FamiliaNovedadConstants.CLASS_NAME, FamiliaNovedadConstants.ROLE_NAME_USUARIONOVEDAD + "." + UsuarioNovedadConstants.ROLE_NAME_TIPOIDENTIFICACIONCD, instance.getOid());
+            if(superQuery == null) {
+                return new SQLExists(FamiliaNovedadConstants.CLASS_NAME, FamiliaNovedadConstants.ROLE_NAME_USUARIONOVEDAD + "." + UsuarioNovedadConstants.ROLE_NAME_TIPOIDENTIFICACIONCD, instance.getOid());
             } else {
                 return new SQLExists(superQuery, FamiliaNovedadConstants.CLASS_NAME, FamiliaNovedadConstants.ROLE_NAME_USUARIONOVEDAD + "." + UsuarioNovedadConstants.ROLE_NAME_TIPOIDENTIFICACIONCD);
             }

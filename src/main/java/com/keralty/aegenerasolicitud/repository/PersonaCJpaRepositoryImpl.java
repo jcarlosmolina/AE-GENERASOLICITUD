@@ -658,10 +658,10 @@ public class PersonaCJpaRepositoryImpl extends AbstractRepository implements Per
 
     // AssocOperator: AssocOperator014
 	@Override
-    public Collection<PreguntaP> assocOperator014(PersonaC personaCTCREAROCUESDEAEpthisPersonaC, CuestionarioP personaCTCREAROCUESDEAEpCuestionarioP) throws SystemException {
+    public Collection<PreguntaP> assocOperator014(CuestionarioP personaCTCREAROCUESDEAEpCuestionarioP) throws SystemException {
         try {
-        	if(personaCTCREAROCUESDEAEpthisPersonaC == null) {
-        		throw new IllegalArgumentException("personaCTCREAROCUESDEAEpthisPersonaC cannot be null");
+        	if (personaCTCREAROCUESDEAEpCuestionarioP == null) {
+        		throw new IllegalArgumentException("personaCTCREAROCUESDEAEpCuestionarioP cannot be null");
         	}
             // FOR ALL pCuestionarioP.Secciones.Preguntas DO PregsCuesMedC.crear(this, pCuestionarioP.Secciones.Preguntas.Numero, pCuestionarioP.Secciones.Preguntas.RespuestaSiNo, pCuestionarioP.Secciones.Preguntas.drvRespuesta)
         return assocOperator014Range1(personaCTCREAROCUESDEAEpCuestionarioP);
@@ -1312,10 +1312,10 @@ public class PersonaCJpaRepositoryImpl extends AbstractRepository implements Per
 
     // AssocOperator: AssocOperator040
 	@Override
-    public Collection<Preexistencia> assocOperator040(PersonaC personaCTCOPIARPREEXDEUSUpthisPersonaC, Usuario personaCTCOPIARPREEXDEUSUpUsuario) throws SystemException {
+    public Collection<Preexistencia> assocOperator040(Usuario personaCTCOPIARPREEXDEUSUpUsuario) throws SystemException {
         try {
-        	if (personaCTCOPIARPREEXDEUSUpthisPersonaC == null) {
-        		throw new IllegalArgumentException("personaCTCOPIARPREEXDEUSUpthisPersonaC cannot be null");
+        	if (personaCTCOPIARPREEXDEUSUpUsuario == null) {
+        		throw new IllegalArgumentException("personaCTCOPIARPREEXDEUSUpUsuario cannot be null");
         	}
             // FOR ALL pUsuario.Preexistencias DO PreexistenciasC.crear(this, pUsuario.Preexistencias.Descripcion, pUsuario.Preexistencias.FecInicio, pUsuario.Preexistencias.FecFin, pUsuario.Preexistencias.Observacion)
         return assocOperator040Range1(personaCTCOPIARPREEXDEUSUpUsuario);

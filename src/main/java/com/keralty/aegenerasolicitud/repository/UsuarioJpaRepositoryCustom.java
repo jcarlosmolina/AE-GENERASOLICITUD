@@ -218,7 +218,7 @@ public interface UsuarioJpaRepositoryCustom {
     
     SQLPopulation assocOperator069Range1Query(Usuario instance) throws SystemException;
 
-    Collection<PreexistenciaC> assocOperator070(Usuario usuarioTACTDESDECOREpthisUsuario, BeneficiarioC usuarioTACTDESDECOREpBeneficiarioC) throws SystemException;
+    Collection<PreexistenciaC> assocOperator070(BeneficiarioC usuarioTACTDESDECOREpBeneficiarioC) throws SystemException;
 
     Collection<PreexistenciaC> assocOperator070Range1(BeneficiarioC usuarioTACTDESDECOREpBeneficiarioC) throws SystemException;
     

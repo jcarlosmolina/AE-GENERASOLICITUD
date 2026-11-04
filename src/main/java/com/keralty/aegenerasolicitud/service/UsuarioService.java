@@ -1049,7 +1049,7 @@ public class UsuarioService extends AbstractService {
             preexistenciaSrv.eliminarImplementation(step1Request);
         }
 
-        for(PreexistenciaC step2Entity : repository.assocOperator070(usuarioTACTDESDECOREpthisUsuario, usuarioTACTDESDECOREpBeneficiarioC)) {
+        for(PreexistenciaC step2Entity : repository.assocOperator070(usuarioTACTDESDECOREpBeneficiarioC)) {
             com.keralty.aegenerasolicitud.viewmodel.preexistencia.siu.CrearRequest step2Request = new com.keralty.aegenerasolicitud.viewmodel.preexistencia.siu.CrearRequest();
             step2Request.setPreexistenciacrearpagrUsuarioInstance(usuarioTACTDESDECOREpthisUsuario);
             step2Request.setPreexistenciacrearpatrDescripcion(step2Entity.getPreexistenciaCDescripcion());

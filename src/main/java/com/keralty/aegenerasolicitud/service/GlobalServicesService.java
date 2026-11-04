@@ -445,9 +445,11 @@ public class GlobalServicesService extends AbstractService {
     public com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGCREARPERSONACOREResponse tGCREARPERSONACOREImplementation(
             com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGCREARPERSONACORERequest request) throws ModelException, SystemException {
         com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGCREARPERSONACOREResponse response = new com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGCREARPERSONACOREResponse();
-        // Persona tGCREARPERSONACOREptPersona = request.getTGCREARPERSONACOREptPersonaInstance();
-        ProteccionDatos tGCREARPERSONACOREptProtDatos = request.getTGCREARPERSONACOREptProtDatosInstance();
+        if (request == null) {
+            throw new IllegalArgumentException("Invalid request to tGCREARPERSONACOREImplementation");
+        }
 
+        ProteccionDatos tGCREARPERSONACOREptProtDatos = request.getTGCREARPERSONACOREptProtDatosInstance();
         CrearActualizarPersonaRequest requestCrearPersona = new CrearActualizarPersonaRequest();
         if (request.getTGCREARPERSONACOREptPersonaInstance().getUsuarios() != null && !request.getTGCREARPERSONACOREptPersonaInstance().getUsuarios().isNull()) {
         	requestCrearPersona.setNumSolicitud( request.getTGCREARPERSONACOREptPersonaInstance().getUsuarios().getSolicitud().getSolicitudNumRadicado().toString());	
@@ -580,10 +582,16 @@ public class GlobalServicesService extends AbstractService {
     public com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGACTPERSONAENCOREResponse tGACTPERSONAENCOREImplementation(
             com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGACTPERSONAENCORERequest request) throws ModelException, SystemException {
         com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGACTPERSONAENCOREResponse response = new com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGACTPERSONAENCOREResponse();
-        Persona tGACTPERSONAENCOREptPersona = request.getTGACTPERSONAENCOREptPersonaInstance();
-        //ProteccionDatos tGACTPERSONAENCOREptPrtoDatos = request.getTGACTPERSONAENCOREptPrtoDatosInstance();
-        Solicitud tGACTPERSONAENCOREptSolicitud = request.getTGACTPERSONAENCOREptSolicitudInstance();
+        if (request == null) {
+            throw new IllegalArgumentException("Invalid request to tGACTPERSONAENCOREImplementation");
+        }
 
+
+        request.checkArguments();
+
+        Persona tGACTPERSONAENCOREptPersona = request.getTGACTPERSONAENCOREptPersonaInstance();
+        
+        Solicitud tGACTPERSONAENCOREptSolicitud = request.getTGACTPERSONAENCOREptSolicitudInstance();
         CrearActualizarPersonaRequest requestActualizar = new CrearActualizarPersonaRequest();
         requestActualizar.setNumSolicitud(tGACTPERSONAENCOREptSolicitud.getSolicitudNumRadicado().toString());
         requestActualizar.setCodigo(tGACTPERSONAENCOREptPersona.getPersonaCodigo().toString());
@@ -874,90 +882,7 @@ public class GlobalServicesService extends AbstractService {
     public ServiceResponse tGNOTIFICARCREARImplementation(
             com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGNOTIFICARCREARRequest request) throws ModelException, SystemException {
         ServiceResponse response = new ServiceResponse();
-        //String tGNOTIFICARCREARptDatosContrato = request.getTGNOTIFICARCREARptDatosContrato();
 
-        request.checkArguments();
-
-        /* Action 1: IF (1 > 2) */
-        boolean ifCondition1 = Long.valueOf(1) > Long.valueOf(2);
-        if (ifCondition1) {
-            com.keralty.aegenerasolicitud.viewmodel.contratoc.siu.TNEWDESDEAERequest step10Request = new com.keralty.aegenerasolicitud.viewmodel.contratoc.siu.TNEWDESDEAERequest();
-            step10Request.setContratoCTNEWDESDEAEptSolicitudInstance(userFunctionsSrv.fugetSolicitudByNumeroFun("0"));
-            step10Request.setContratoCTNEWDESDEAEptNumFamiliaCORE("0");
-            contratoCSrv.tNEWDESDEAEImplementation(step10Request);
-            
-            
-            com.keralty.aegenerasolicitud.viewmodel.contratoc.siu.TPOSTNOTICREARRequest step11Request = new com.keralty.aegenerasolicitud.viewmodel.contratoc.siu.TPOSTNOTICREARRequest();
-            step11Request.setContratoCTPOSTNOTICREARpthisContratoCInstance(userFunctionsSrv.fugetSolicitudByNumeroFun("0").getContratoC());
-            step11Request.setContratoCTPOSTNOTICREARptpeNumContrato("0");
-            step11Request.setContratoCTPOSTNOTICREARptpeFechaIniVigencia(STDFunctions.systemDateFun());
-            step11Request.setContratoCTPOSTNOTICREARptpeFechaFinVigencia(STDFunctions.systemDateFun());
-            step11Request.setContratoCTPOSTNOTICREARptNumFamilia("0");
-            step11Request.setContratoCTPOSTNOTICREARptAsesorSolicitudInstance(null);
-            step11Request.setContratoCTPOSTNOTICREARptPeriodicidadInstance(null);
-            step11Request.setContratoCTPOSTNOTICREARptProductoInstance(null);
-            step11Request.setContratoCTPOSTNOTICREARptPlanInstance(null);
-            step11Request.setContratoCTPOSTNOTICREARptCodTipoContrato(Long.valueOf(0));
-            step11Request.setContratoCTPOSTNOTICREARptDireccionCompletaContrato("");
-            step11Request.setContratoCTPOSTNOTICREARptMunicipioDireccionInstance(null);
-            step11Request.setContratoCTPOSTNOTICREARptTelefonoContratante(null);
-            step11Request.setContratoCTPOSTNOTICREARptCelularContratante(null);
-            step11Request.setContratoCTPOSTNOTICREARptTipoIdContratanteInstance(null);
-            step11Request.setContratoCTPOSTNOTICREARptNumIdentificacionContratante("");
-            step11Request.setContratoCTPOSTNOTICREARptNombreCompletoContratante("");
-            step11Request.setContratoCTPOSTNOTICREARptDireccionCompletaTitular("");
-            step11Request.setContratoCTPOSTNOTICREARptTipoIdTitularInstance(null);
-            step11Request.setContratoCTPOSTNOTICREARptNumIdentificacionTitular("");
-            step11Request.setContratoCTPOSTNOTICREARptNombreCompletoTitular("");
-            step11Request.setContratoCTPOSTNOTICREARptMunicipioDireccionTitularInstance(null);
-            contratoCSrv.tPOSTNOTICREARImplementation(step11Request);
-            for(FamiliaC step1012Entity : globalServicesRepository.assocOperator117()) {
-                com.keralty.aegenerasolicitud.viewmodel.familiac.siu.TCREARACTBENEFRequest step12Request = new com.keralty.aegenerasolicitud.viewmodel.familiac.siu.TCREARACTBENEFRequest();
-                step12Request.setFamiliaCTCREARACTBENEFpthisFamiliaCInstance(step1012Entity);
-                step12Request.setFamiliaCTCREARACTBENEFptpagrEPSCInstance(null);
-                step12Request.setFamiliaCTCREARACTBENEFptpagrCompanyiaMPCInstance(null);
-                step12Request.setFamiliaCTCREARACTBENEFptpagrParentescoCInstance(userFunctionsSrv.fugetParentescoTitularFun());
-                step12Request.setFamiliaCTCREARACTBENEFptpagrEstadoBeneficiarioCInstance(null);
-                step12Request.setFamiliaCTCREARACTBENEFptpatrCodigoTipoUsuario("0");
-                step12Request.setFamiliaCTCREARACTBENEFptpatrIndicadorBBGestacion(Boolean.FALSE);
-                step12Request.setFamiliaCTCREARACTBENEFptpatrCodUsuarioBancoRep(null);
-                step12Request.setFamiliaCTCREARACTBENEFptpatrFechaAntiguedad(null);
-                step12Request.setFamiliaCTCREARACTBENEFptpatrFechaAntiguedadRealOSI(null);
-                step12Request.setFamiliaCTCREARACTBENEFptpatrEstadoMedico(null);
-                step12Request.setFamiliaCTCREARACTBENEFptpatrTienePreexistencias(Boolean.FALSE);
-                step12Request.setFamiliaCTCREARACTBENEFptpatrFechaInicioVigencia(null);
-                step12Request.setFamiliaCTCREARACTBENEFptpatrFechaFinVigencia(STDFunctions.systemDateFun());
-                step12Request.setFamiliaCTCREARACTBENEFptpatrNumUsuario(Long.valueOf(0));
-                step12Request.setFamiliaCTCREARACTBENEFptptTipoIdInstance(userFunctionsSrv.fugetTipoIdentificacionFun("0"));
-                step12Request.setFamiliaCTCREARACTBENEFptptNumIdentificacion("");
-                step12Request.setFamiliaCTCREARACTBENEFptptNombreCompleto("");
-                step12Request.setFamiliaCTCREARACTBENEFptptCodigoCORE(Long.valueOf(0));
-                familiaCSrv.tCREARACTBENEFImplementation(step12Request);
-            }
-            for(PersonaC step1013Entity : globalServicesRepository.assocOperator118()) {
-                com.keralty.aegenerasolicitud.viewmodel.preexistenciac.siu.CrearRequest step13Request = new com.keralty.aegenerasolicitud.viewmodel.preexistenciac.siu.CrearRequest();
-                step13Request.setPreexistenciaCcrearpagrPersonaCInstance(step1013Entity);
-                step13Request.setPreexistenciaCcrearpatrDescripcion("");
-                step13Request.setPreexistenciaCcrearpatrFecInicio(STDFunctions.systemDateFun());
-                step13Request.setPreexistenciaCcrearpatrFecFin(STDFunctions.systemDateFun());
-                step13Request.setPreexistenciaCcrearpatrObservacion("");
-                preexistenciaCSrv.crearImplementation(step13Request);
-            }
-            for(BeneficiarioC step1014Entity : globalServicesRepository.assocOperator119()) {
-                com.keralty.aegenerasolicitud.viewmodel.conceptoc.siu.CrearRequest step14Request = new com.keralty.aegenerasolicitud.viewmodel.conceptoc.siu.CrearRequest();
-                step14Request.setConceptoCcrearpagrBeneficiarioCInstance(step1014Entity);
-                step14Request.setConceptoCcrearpatrcodConceptoContrato("");
-                step14Request.setConceptoCcrearpatrnombreConcepto("");
-                step14Request.setConceptoCcrearpatrporcentajeConcepto(Utilities.convertToDouble(Long.valueOf(0)));
-                step14Request.setConceptoCcrearpatrvalorConcepto(Utilities.convertToDouble(Long.valueOf(0)));
-                conceptoCSrv.crearImplementation(step14Request);
-            }
-            com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TNOTIFICARCREARRequest step15Request = new com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TNOTIFICARCREARRequest();
-            step15Request.setSolicitudTNOTIFICARCREARpthisSolicitudInstance(userFunctionsSrv.fugetSolicitudByNumeroFun("0"));
-            step15Request.setSolicitudTNOTIFICARCREARptConfiCierreSolicitud(Boolean.FALSE);
-            step15Request.setSolicitudTNOTIFICARCREARptNumFamiliaCORE(null);
-            solicitudSrv.tNOTIFICARCREARImplementation(step15Request);
-        }
         return response;
     }
 
@@ -998,90 +923,7 @@ public class GlobalServicesService extends AbstractService {
     public ServiceResponse tGNOTIFICARINCLUSIONImplementation(
             com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGNOTIFICARINCLUSIONRequest request) throws ModelException, SystemException {
         ServiceResponse response = new ServiceResponse();
-        //String tGNOTIFICARINCLUSIONptDatosInclusion = request.getTGNOTIFICARINCLUSIONptDatosInclusion();
 
-        request.checkArguments();
-
-        /* Action 1: IF (1 > 2) */
-        boolean ifCondition1 = Long.valueOf(1) > Long.valueOf(2);
-        if (ifCondition1) {
-            com.keralty.aegenerasolicitud.viewmodel.contratoc.siu.TNEWDESDEAERequest step10Request = new com.keralty.aegenerasolicitud.viewmodel.contratoc.siu.TNEWDESDEAERequest();
-            step10Request.setContratoCTNEWDESDEAEptSolicitudInstance(userFunctionsSrv.fugetSolicitudByNumeroFun("0"));
-            step10Request.setContratoCTNEWDESDEAEptNumFamiliaCORE("0");
-            contratoCSrv.tNEWDESDEAEImplementation(step10Request);
-            
-            
-            com.keralty.aegenerasolicitud.viewmodel.contratoc.siu.TPOSTNOTICREARRequest step11Request = new com.keralty.aegenerasolicitud.viewmodel.contratoc.siu.TPOSTNOTICREARRequest();
-            step11Request.setContratoCTPOSTNOTICREARpthisContratoCInstance(userFunctionsSrv.fugetSolicitudByNumeroFun("0").getContratoC());
-            step11Request.setContratoCTPOSTNOTICREARptpeNumContrato("0");
-            step11Request.setContratoCTPOSTNOTICREARptpeFechaIniVigencia(STDFunctions.systemDateFun());
-            step11Request.setContratoCTPOSTNOTICREARptpeFechaFinVigencia(STDFunctions.systemDateFun());
-            step11Request.setContratoCTPOSTNOTICREARptNumFamilia("0");
-            step11Request.setContratoCTPOSTNOTICREARptAsesorSolicitudInstance(null);
-            step11Request.setContratoCTPOSTNOTICREARptPeriodicidadInstance(null);
-            step11Request.setContratoCTPOSTNOTICREARptProductoInstance(null);
-            step11Request.setContratoCTPOSTNOTICREARptPlanInstance(null);
-            step11Request.setContratoCTPOSTNOTICREARptCodTipoContrato(Long.valueOf(0));
-            step11Request.setContratoCTPOSTNOTICREARptDireccionCompletaContrato("");
-            step11Request.setContratoCTPOSTNOTICREARptMunicipioDireccionInstance(null);
-            step11Request.setContratoCTPOSTNOTICREARptTelefonoContratante(null);
-            step11Request.setContratoCTPOSTNOTICREARptCelularContratante(null);
-            step11Request.setContratoCTPOSTNOTICREARptTipoIdContratanteInstance(null);
-            step11Request.setContratoCTPOSTNOTICREARptNumIdentificacionContratante("");
-            step11Request.setContratoCTPOSTNOTICREARptNombreCompletoContratante("");
-            step11Request.setContratoCTPOSTNOTICREARptDireccionCompletaTitular("");
-            step11Request.setContratoCTPOSTNOTICREARptTipoIdTitularInstance(null);
-            step11Request.setContratoCTPOSTNOTICREARptNumIdentificacionTitular("");
-            step11Request.setContratoCTPOSTNOTICREARptNombreCompletoTitular("");
-            step11Request.setContratoCTPOSTNOTICREARptMunicipioDireccionTitularInstance(null);
-            contratoCSrv.tPOSTNOTICREARImplementation(step11Request);
-            for(FamiliaC step1012Entity : globalServicesRepository.assocOperator120()) {
-                com.keralty.aegenerasolicitud.viewmodel.familiac.siu.TCREARACTBENEFRequest step12Request = new com.keralty.aegenerasolicitud.viewmodel.familiac.siu.TCREARACTBENEFRequest();
-                step12Request.setFamiliaCTCREARACTBENEFpthisFamiliaCInstance(step1012Entity);
-                step12Request.setFamiliaCTCREARACTBENEFptpagrEPSCInstance(null);
-                step12Request.setFamiliaCTCREARACTBENEFptpagrCompanyiaMPCInstance(null);
-                step12Request.setFamiliaCTCREARACTBENEFptpagrParentescoCInstance(userFunctionsSrv.fugetParentescoTitularFun());
-                step12Request.setFamiliaCTCREARACTBENEFptpagrEstadoBeneficiarioCInstance(null);
-                step12Request.setFamiliaCTCREARACTBENEFptpatrCodigoTipoUsuario("0");
-                step12Request.setFamiliaCTCREARACTBENEFptpatrIndicadorBBGestacion(Boolean.FALSE);
-                step12Request.setFamiliaCTCREARACTBENEFptpatrCodUsuarioBancoRep(null);
-                step12Request.setFamiliaCTCREARACTBENEFptpatrFechaAntiguedad(null);
-                step12Request.setFamiliaCTCREARACTBENEFptpatrFechaAntiguedadRealOSI(null);
-                step12Request.setFamiliaCTCREARACTBENEFptpatrEstadoMedico(null);
-                step12Request.setFamiliaCTCREARACTBENEFptpatrTienePreexistencias(Boolean.FALSE);
-                step12Request.setFamiliaCTCREARACTBENEFptpatrFechaInicioVigencia(null);
-                step12Request.setFamiliaCTCREARACTBENEFptpatrFechaFinVigencia(STDFunctions.systemDateFun());
-                step12Request.setFamiliaCTCREARACTBENEFptpatrNumUsuario(Long.valueOf(0));
-                step12Request.setFamiliaCTCREARACTBENEFptptTipoIdInstance(userFunctionsSrv.fugetTipoIdentificacionFun("0"));
-                step12Request.setFamiliaCTCREARACTBENEFptptNumIdentificacion("");
-                step12Request.setFamiliaCTCREARACTBENEFptptNombreCompleto("");
-                step12Request.setFamiliaCTCREARACTBENEFptptCodigoCORE(Long.valueOf(0));
-                familiaCSrv.tCREARACTBENEFImplementation(step12Request);
-            }
-            for(PersonaC step1013Entity : globalServicesRepository.assocOperator121()) {
-                com.keralty.aegenerasolicitud.viewmodel.preexistenciac.siu.CrearRequest step13Request = new com.keralty.aegenerasolicitud.viewmodel.preexistenciac.siu.CrearRequest();
-                step13Request.setPreexistenciaCcrearpagrPersonaCInstance(step1013Entity);
-                step13Request.setPreexistenciaCcrearpatrDescripcion("");
-                step13Request.setPreexistenciaCcrearpatrFecInicio(STDFunctions.systemDateFun());
-                step13Request.setPreexistenciaCcrearpatrFecFin(STDFunctions.systemDateFun());
-                step13Request.setPreexistenciaCcrearpatrObservacion("");
-                preexistenciaCSrv.crearImplementation(step13Request);
-            }
-            for(BeneficiarioC step1014Entity : globalServicesRepository.assocOperator122()) {
-                com.keralty.aegenerasolicitud.viewmodel.conceptoc.siu.CrearRequest step14Request = new com.keralty.aegenerasolicitud.viewmodel.conceptoc.siu.CrearRequest();
-                step14Request.setConceptoCcrearpagrBeneficiarioCInstance(step1014Entity);
-                step14Request.setConceptoCcrearpatrcodConceptoContrato("");
-                step14Request.setConceptoCcrearpatrnombreConcepto("");
-                step14Request.setConceptoCcrearpatrporcentajeConcepto(Utilities.convertToDouble(Long.valueOf(0)));
-                step14Request.setConceptoCcrearpatrvalorConcepto(Utilities.convertToDouble(Long.valueOf(0)));
-                conceptoCSrv.crearImplementation(step14Request);
-            }
-            com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TNOTIFICARINCLUSIONRequest step15Request = new com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TNOTIFICARINCLUSIONRequest();
-            step15Request.setSolicitudTNOTIFICARINCLUSIONpthisSolicitudInstance(userFunctionsSrv.fugetSolicitudByNumeroFun("0"));
-            step15Request.setSolicitudTNOTIFICARINCLUSIONptConfiCierreSolicitud(Boolean.FALSE);
-            step15Request.setSolicitudTNOTIFICARINCLUSIONptNumFamiliaCORE(null);
-            solicitudSrv.tNOTIFICARINCLUSIONImplementation(step15Request);
-        }
         return response;
     }
 
@@ -1122,17 +964,7 @@ public class GlobalServicesService extends AbstractService {
     public ServiceResponse tGNOTIFICARANULARImplementation(
             com.keralty.aegenerasolicitud.viewmodel.globalservices.siu.TGNOTIFICARANULARRequest request) throws ModelException, SystemException {
         ServiceResponse response = new ServiceResponse();
-        //String tGNOTIFICARANULARptDatoAnulacion = request.getTGNOTIFICARANULARptDatoAnulacion();
 
-        request.checkArguments();
-
-        /* Action 1: IF (1 > 2) */
-        boolean ifCondition1 = Long.valueOf(1) > Long.valueOf(2);
-        if (ifCondition1) {
-            com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TNOTIFICARANULACIONRequest step10Request = new com.keralty.aegenerasolicitud.viewmodel.solicitud.siu.TNOTIFICARANULACIONRequest();
-            step10Request.setSolicitudTNOTIFICARANULACIONpthisSolicitudInstance(userFunctionsSrv.fugetSolicitudByNumeroFun("0"));
-            solicitudSrv.tNOTIFICARANULACIONImplementation(step10Request);
-        }
         return response;
     }
 
